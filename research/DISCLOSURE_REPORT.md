@@ -184,9 +184,25 @@ An attacker with the xcframework binary identifies the static-auth entry points 
 
 ### T3 — Cryptographic weakness of the scheme
 
-**Vector:** RSA-1024 + e=3 + SHA-1 + PKCS#1 v1.5 (raw hash).  
-**Status:** No successful forge was produced in this assessment. Residual risk remains versus modern crypto standards and future cryptanalysis.  
-**Mitigation:** Migrate to RSA-2048+/PSS or Ed25519 + SHA-256; drop raw-hash PKCS#1 mode.
+**Vector:** The static-auth scheme relies on cryptographic primitives that are below current industry standards: RSA-1024, public exponent `e = 3`, SHA-1, and raw PKCS#1 v1.5 padding without an ASN.1 DigestInfo OID.
+
+**Scenario:**
+The signed payload is the raw 20-byte SHA-1 digest of the client-id marker. BearSSL verifies it with `br_rsa_pkcs1_vrfy(..., hash_oid=NULL, hash_len=20)`, meaning the padding block ends with `00 01 FF…FF 00 ‖ digest` rather than the standard PKCS#1 DigestInfo structure. Standard verifiers in common cryptographic libraries therefore reject these signatures, while a raw-hash unpad accepts them. RSA-1024 and `e = 3` are historically associated with padding-oracle and Bleichenbacher-class concerns, and SHA-1 no longer provides collision resistance. While forging a signature still requires the vendor private key or a successful cryptographic attack, the overall construction is dated and reduces the margin against future advances.
+
+**Prerequisites:**
+- Cryptanalytic capability or access to the vendor private key (neither was obtained in this assessment).
+- Ability to craft a PKCS#1 v1.5 message block that the raw-hash verifier accepts.
+
+**Impact:**
+- A successful cryptographic attack could mint arbitrary valid signatures for the embedded public key.
+- Even without a practical forge today, the weak construction accelerates risk as attacks on RSA-1024 and SHA-1 improve.
+
+**Observable indicators:**
+- N/A for a pure cryptographic break; detection requires key rotation and monitoring for signatures that do not match issued license records.
+
+**Mapped mitigations:**
+- **P0 — Crypto upgrade:** Migrate to RSA-2048+ with public exponent `e = 65537` (or Ed25519), use SHA-256 or SHA-512, and replace raw PKCS#1 v1.5 with standard DigestInfo PKCS#1 v1.5 or RSA-PSS (see `VENDOR_HARDENING.md` §P0).
+- **P0 — Version the auth blob:** Ensure old trial libraries and new keys cannot be mixed, enabling clean cryptographic migration (see `VENDOR_HARDENING.md` §P0).
 
 ### T4 — Weak payload binding
 

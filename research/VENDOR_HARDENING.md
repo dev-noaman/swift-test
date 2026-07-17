@@ -24,6 +24,8 @@
 3. Use **standard** PKCS#1 v1.5 DigestInfo **or** prefer **RSA-PSS** / Ed25519. Drop the BearSSL `hash_oid=NULL` raw-hash mode.  
 4. Version the auth blob so old trial libraries and new keys cannot be mixed accidentally.
 
+**Patch-resistance contribution:** Stronger crypto and a versioned auth blob do not stop an attacker from editing a local binary, but they remove weak raw-hash shortcuts and make patched old trial libraries cryptographically obsolete after migration. A testing engineer should treat P0 as enabling clean cutover: post-upgrade builds must reject auth blobs / keys from the trial 1.3.1 generation (see TR-07).
+
 ### P1 — Stronger license binding
 
 Sign a structured payload, not a bare client id string, e.g.:
@@ -34,11 +36,15 @@ client_id | product | platform | library_build_id | config_sha256 | not_before |
 
 Embed `library_build_id` and `config_sha256` expectations in the binary (or derive from the loaded `.ocr` file). Reject sessions when config hash ≠ license claim.
 
+**Patch-resistance contribution:** Structured claims (`library_build_id`, `config_sha256`, validity window) raise the cost of both signature theft and local verify-gate patches: even if one compare is forced true, session setup must still fail when build/config claims disagree. Map to TR-05 and TR-07 in § Patch resistance (testing guide).
+
 ### P2 — Operational controls
 
 1. Prefer **server-delivered short-lived tokens** (as README already suggests) over shipping the 256-hex string in the IPA.  
 2. Rate-limit / revoke via online check for production SKUs if threat model allows.  
 3. Separate **trial** and **production** keypairs; rotate trial keys per customer build.
+
+**Patch-resistance contribution:** Short-lived server-delivered tokens bound offline success to a renewing online check. For production SKUs, a redistributed patched library (TR-11) should fail token renew even if local static auth is neutralized. Trial builds may remain offline; document the SKU policy under test.
 
 ### P3 — Anti-patch / integrity
 
@@ -47,6 +53,8 @@ Embed `library_build_id` and `config_sha256` expectations in the binary (or deri
 3. Treat binary patching of `VSA` as expected; defense-in-depth is crypto + binding + ops, not obscurity alone.
 
 Concrete object-file anchors for the current trial build (descriptive map only): see `research/VERIFY_PATH_MAP.md`. Notable: `VSA`/`VEA` are short wrappers that **tail-branch** into `pkcs1_verify`; `EXPECTED_HASH` sits at `__const+0xAF` beside the 132-byte pubkey; `VCIH` reuses the same digest constant.
+
+**Details:** § Patch resistance (testing guide) — testing-engineer surface map, TR-01…TR-11 matrix (including binary-patch intents), design patterns, and acceptance checklist.
 
 ## What this research does *not* claim
 

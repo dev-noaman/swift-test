@@ -1,0 +1,22 @@
+workflows:
+  hardened-auth-smoke:
+    name: Hardened auth smoke
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+    scripts:
+      - name: Verify hardened-auth Swift sources
+        script: |
+          set -e
+          test -f research/verification/HardenedAuthWrapper.swift
+          test -f research/verification/OCRAuthHardenedTests.swift
+          echo "HardenedAuthWrapper.swift + OCRAuthHardenedTests.swift present"
+      # Uncomment after an XCTest target/scheme exists in the Xcode project:
+      # - name: Run OCRAuthHardenedTests
+      #   script: |
+      #     xcode-project run-tests \
+      #       --project Samples/Swift/OCRStudioSDKSample.xcodeproj \
+      #       --scheme OCRAuthHardenedTests \
+      #       --device "iPhone 16"
+      #   test_report: build/ios/test/*.xml

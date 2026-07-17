@@ -158,10 +158,29 @@ An integrator or attacker who has access to a shipped IPA or source repository c
 
 ### T2 — Binary patch of verify path
 
-**Vector:** Patch `VSA` / `pkcs1_verify` / compare sites in the static library or linked binary so auth always succeeds.  
-**Why it is realistic:** Single offline gate; integrity check (`VCIH`) is a weak related constant compare.  
-**Evidence map:** Symbol VMAs, relocation-resolved call sites, and `__const` blob layout are documented in `research/VERIFY_PATH_MAP.md` (descriptive only — no patch tooling). Key object-file anchors: `VSA` @ `static_auth` text `0xb4` (tail-`B` to `pkcs1_verify`); digest compare branches in `verify` text `~0xa4`–`0xc8`; `EXPECTED_HASH` at `__const+0xAF`.  
-**Mitigation:** Stronger integrity over the verify region; diversify checks; prefer online attestation for high-value SKUs; do not rely on obscurity.
+**Vector:** Modify the static library or linked binary so that the offline authentication check always succeeds, regardless of the supplied signature.
+
+**Scenario:**
+An attacker with the xcframework binary identifies the static-auth entry points in `static_auth.cpp.o` — `se::security::internal::VSA` and `se::security::internal::VEA`. Both are thin wrappers that load the embedded public-key / expected-digest blob from `__const` and tail-branch into `se::security::pkcs1_verify`. The attacker could patch any of three conceptual locations: the entry wrappers to skip verification, the compare logic inside `pkcs1_verify`, or the 20-byte expected digest in the `__const` blob. Because the companion integrity check `VCIH()` recomputes `SHA-1(client_id)` and compares it to the same embedded digest, an attacker who controls both the verify gate and the integrity constant can defeat both checks simultaneously.
+
+**Prerequisites:**
+- Write access to the shipped static library or the linked app binary.
+- Ability to locate the auth functions (mangled symbols are present in the archive).
+- Understanding that `VSA`/`VEA` tail-branch into `pkcs1_verify` and that `EXPECTED_HASH` sits adjacent to the public key in the `__const` blob (see `research/VERIFY_PATH_MAP.md`).
+
+**Impact:**
+- Complete bypass of offline license validation for the patched binary.
+- A single modified library build can be redistributed to disable authentication across all apps that link it.
+
+**Observable indicators:**
+- Modified `libocrstudiosdk-ios.a` or app binary with altered bytes in the `se::security::internal::VSA` / `pkcs1_verify` code regions.
+- App succeeds at `CreateSession` with an empty, malformed, or known-invalid signature.
+- Unexpected changes to the `__const` auth blob near the expected digest offset.
+
+**Mapped mitigations:**
+- **P0 — Crypto upgrade:** A modern signature scheme raises the cost of any patch-based downgrade, but patching must still be assumed possible (see `VENDOR_HARDENING.md` §P0).
+- **P3 — Anti-patch / integrity:** Bind `VCIH` (or its successor) to a code-region hash of the verify path, not only to the client-id string; diversify checks across multiple locations; avoid a single 20-byte constant compare at a fixed offset (see `VENDOR_HARDENING.md` §P3).
+- **P2 — Online attestation:** For high-value SKUs, supplement offline auth with short-lived server-issued tokens so a patched binary cannot operate indefinitely offline (see `VENDOR_HARDENING.md` §P2).
 
 ### T3 — Cryptographic weakness of the scheme
 

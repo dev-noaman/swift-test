@@ -25,6 +25,7 @@
 
 import Foundation
 import CryptoKit
+import Security
 
 // MARK: - Gate status (Swift mirror of OCRAuthGateStatus, §6.6)
 

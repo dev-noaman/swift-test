@@ -1,22 +1,26 @@
 workflows:
-  hardened-auth-smoke:
-    name: Hardened auth smoke
-    max_build_duration: 30
+  hardened-auth-tests:
+    name: Hardened auth XCTest
+    max_build_duration: 60
     instance_type: mac_mini_m2
     environment:
       xcode: latest
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: master
+          include: true
+        - pattern: main
+          include: true
+      cancel_previous_builds: true
     scripts:
-      - name: Verify hardened-auth Swift sources
+      - name: Run HardenedAuth package tests
         script: |
-          set -e
-          test -f research/verification/HardenedAuthWrapper.swift
-          test -f research/verification/OCRAuthHardenedTests.swift
-          echo "HardenedAuthWrapper.swift + OCRAuthHardenedTests.swift present"
-      # Uncomment after an XCTest target/scheme exists in the Xcode project:
-      # - name: Run OCRAuthHardenedTests
-      #   script: |
-      #     xcode-project run-tests \
-      #       --project Samples/Swift/OCRStudioSDKSample.xcodeproj \
-      #       --scheme OCRAuthHardenedTests \
-      #       --device "iPhone 16"
-      #   test_report: build/ios/test/*.xml
+          set -euo pipefail
+          cd research/verification
+          swift --version
+          swift test --parallel 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-test.log"
+          # Fail the build if any test failed (swift test exit code already does this).
+    artifacts:
+      - hardened-auth-test.log

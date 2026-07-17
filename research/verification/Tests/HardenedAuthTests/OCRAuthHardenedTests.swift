@@ -20,14 +20,13 @@
 //    • The shipped binary's real code-region hash / VCIH reads are represented
 //      by injectable IntegrityChecking stubs (§6.2.4).
 //
-//  Target layout: add this file + HardenedAuthWrapper.swift to a test target
-//  (or `@testable import` the module that holds the wrapper). Requires iOS 13+
-//  / macOS 10.15+ for CryptoKit.
+//  Target layout: Swift package `research/verification` (module HardenedAuth).
+//  Run: `cd research/verification && swift test` (macOS / Codemagic).
 //
 
 import XCTest
 import CryptoKit
-@testable import OCRStudioSDKSample   // adjust to the module that hosts the wrapper
+@testable import HardenedAuth
 
 // MARK: - Fixtures
 

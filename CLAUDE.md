@@ -167,6 +167,63 @@ Tooling notes for continuing binary analysis of this SDK — these cost real tim
 - **Ghidra MCP connection:** `list_instances` returned empty even with Ghidra open; `connect_instance("ocrstudio")` succeeded via the **TCP fallback** at `http://127.0.0.1:8089`. If discovery shows no instances, just call `connect_instance` with the project name directly.
 - **Relocation-resolved pointer args** (e.g. `pkcs1_verify(sig, 0xe4, 0x193)`) point into the `__const` section; read those addresses with `read_memory` to dump embedded keys/hashes. Offsets are relative to the const section base (`0xe4` here).
 
+## Hardened-Auth Reference Package (source of truth)
+
+> Reference remediation artifacts implementing the P0–P3 hardening design. The narrative package `research/VALIDATION_PACKAGE.md` defers to **this section** as source of truth. Artifacts live in `research/verification/`. **These are reference/spec code, NOT shipped SDK code** — `CreateSessionHardened` does not exist in the trial xcframework; the wrapper is written against protocols so the vendor can drop in the real ObjC++ entry.
+
+### Artifacts (`research/verification/`)
+
+| File | Role |
+|------|------|
+| `reference_server_mint.py` | Vendor-side Ed25519 attestation-JWT mint (`--gen-key` / `--mint` / `--serve`). PyNaCl, manual JWT. |
+| `Sources/HardenedAuth/HardenedAuthWrapper.swift` | Client wrapper + four-gate `HardenedAuthVerifier` (CryptoKit `Curve25519.Signing`), `NonceLRU`, Keychain token cache. |
+| `Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | XCTest suite for the §8 coverage matrix; mints tokens in-process with a pinned CryptoKit key. |
+| `Package.swift` | SwiftPM package — `cd research/verification && swift test` (Codemagic workflow `hardened-auth-tests`). |
+
+### Attestation JWT wire contract (MUST match across Python mint ↔ Swift verify)
+
+- Compact JWS, `alg="EdDSA"`; header is **exactly** `{"alg":"EdDSA","typ":"JWT"}`.
+- `signing_input = base64url(header) + "." + base64url(payload)` — base64url, **no `=` padding**.
+- Signature = **raw 64-byte Ed25519** over the **ASCII** bytes of `signing_input` (not DER, no JOSE-lib wrapping).
+- `jwt = signing_input + "." + base64url(signature)`.
+- Python signs with **PyNaCl `SigningKey`** (chosen over PyJWT for byte-exactness). Swift verifies with CryptoKit `publicKey.isValidSignature(sig, for: signingInputASCII)`.
+- Claims (8, this order): `sub, lib_build_id, platform, config_sha256, iat, exp, nonce, aud`. Decode is by name (JSONDecoder), so emit order only affects the signed bytes, not parsing.
+
+### Baked policy constants (reference build)
+
+| Field | Value |
+|-------|-------|
+| `sub` / client-id | `ocrstudio_arafatgroup_trial` |
+| `lib_build_id` | `1.3.1-ios-arm64-trial-2026Q3` |
+| `platform` / `aud` | `ios` / `ocrstudio-sdk` |
+| `config_sha256` | lowercase hex `SHA-256(config/*.ocr)` |
+| Max token lifetime | 48 h hard cap (`exp − iat`) |
+| Clock-skew tolerance | ±300 s |
+| `iatFloor` | `1767225600` = 2026-01-01Z — reject older `iat` |
+
+**Gotcha:** the `iat 1721234567` example in `VALIDATION_PACKAGE.md` §6.2.2 is actually **2024-07-17** (illustrative only, and *below* `iatFloor`). The test suite uses a deterministic clock `now = 1784332800` (2026-07-18Z).
+
+### Verifier gate order (`HardenedAuthVerifier.verify` — do not reorder)
+
+1. Ed25519 signature over `header.payload`
+2. temporal: `iat ≥ iatFloor`, `iat ≤ now+skew`, `exp > now−skew`, `(exp−iat) ≤ 48h`
+3. identity: `aud`, `sub`, `platform`, `lib_build_id`, `config_sha256`
+4. nonce replay (`NonceLRU`, ~1e6 entries)
+5. integrity: code-region hash, then hardened `VCIH`
+
+Result maps to `OCRAuthGateStatus { ok=0, legacyFail, jwtSignatureBad, jwtExpired, buildMismatch, configMismatch, nonceReused, codeHashBad, vcihFail }` (mirrors the ObjC `NS_ENUM` in `VALIDATION_PACKAGE.md` §6.6).
+
+### Validation (hard-won)
+
+- Mint + JWT contract need **no Xcode**:
+  ```bash
+  PY="C:\Users\NN\AppData\Local\Programs\Python\Python310\python.exe"
+  "$PY" research/verification/reference_server_mint.py --gen-key --seed <64-hex>
+  "$PY" research/verification/reference_server_mint.py --mint --priv <64-hex> --config-sha256 <64-hex> --now <epoch>
+  ```
+- **Swift will not compile on this Windows host.** Run XCTest on Codemagic (`codemagic.yaml` → workflow `hardened-auth-tests`) or any Mac: `cd research/verification && swift test`. The Python↔Swift contract was also proven by reimplementing the verifier's steps in Python (PyNaCl) against a minted token. A green run against a *shipped* hardened library (`VALIDATION_PACKAGE.md` Appendix A steps 9–10) still requires the vendor binary — do not claim that passed here.
+- `reference_server_mint.py` depends on **Flask + PyNaCl** (not PyJWT, despite Appendix A step 2 listing it). Deterministic keygen/mint via `--seed` / `--now` for reproducible tests.
+
 ## Building & Running
 
 ### Sample iOS App
@@ -325,7 +382,23 @@ Only the holder of the private activation material can mint new valid signatures
 | Client-id hash self-check | `python research/verify_static_auth_poc.py --self-test` | **PASS** |
 | Tampered signature (1 nibble flip) | `--signature 3122df27...` | **FAIL** (exit 1) |
 
-#### 5.2 Supporting artifacts
+#### 5.2 Binary ↔ PoC cross-check validation (17 July 2026)
+
+Direct carve of `static_auth.cpp.o` (1736 bytes, arm64 slice, MH_MAGIC `0xFEEDFACF`) from the shipped `libocrstudiosdk-ios.a` confirms every constant the Python PoC embeds actually lives in the binary `__TEXT,__const` section at vma `0xe4` (195 bytes):
+
+| Field | Size | PoC embeds | Binary `__const` | Match |
+|-------|------|-----------|------------------|-------|
+| RSA modulus `n` | 128 B | hardcoded hex | offset `+0x00` | ✅ identical (byte-for-byte) |
+| RSA exponent `e` | 4 B | `00000003` (big-endian) | offset `+0x80` | ✅ identical |
+| Client-id marker | var | `ocrstudio_arafatgroup_trial` | offset `+0x93` inside marker | ✅ present |
+| `EXPECTED_HASH` | 20 B | `25159e611dfa6f5f077a732a01d17ead8cc9770b` | offset `+0xAF` | ✅ identical |
+| `SHA-1(client_id) == EXPECTED_HASH` | — | verified | verified | ✅ |
+
+Reproducer: `python check_binary_poc.py` (lives in repo as `research/check_binary_poc.py`) — parses the BSD `ar` archive, locates the arm64 `static_auth.cpp.o` slice by MH_MAGIC, parses Mach-O `LC_SEGMENT_64`, extracts `__TEXT,__const`, compares all five fields, and prints `BINARY CROSS-CHECK: ALL MATCH`. Exit `0` only if every field matches.
+
+Also verified negative behaviour of the PoC: empty/null sigs would be skipped by the `CBZ x0` at `VSA+0x0`, malformed sigs (≠256 hex chars) are rejected upstream before BearSSL, and random 256-hex payloads produce `bad PKCS#1 header` (the tampered-sig test returns `6bb7…` at the first 2 bytes — well off the `00 01` required start).
+
+#### 5.3 Supporting artifacts
 
 | Path | Description |
 |------|-------------|
@@ -333,6 +406,12 @@ Only the holder of the private activation material can mint new valid signatures
 | `research/ocrstudio_pubkey_pkcs1.pem` | Recovered public key (PKCS#1) |
 | `research/VENDOR_HARDENING.md` | Detailed mitigation backlog + patch-resistance testing guide |
 | `research/VERIFY_PATH_MAP.md` | Symbol/offset/reloc map of the verify path |
+| `research/check_binary_poc.py` | Carves arm64 `static_auth.cpp.o` from shipped `libocrstudiosdk-ios.a` and byte-compares its `__const` blob against PoC embed constants |
+| `research/VALIDATION_PACKAGE.md` | Full authorization validation + remediation narrative (defers to CLAUDE.md as source of truth) |
+| `research/verification/reference_server_mint.py` | Reference Ed25519 attestation-JWT mint (see § Hardened-Auth Reference Package) |
+| `research/verification/Sources/HardenedAuth/HardenedAuthWrapper.swift` | Reference client wrapper + four-gate verifier |
+| `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | Reference XCTest suite (§8 matrix) |
+| `research/verification/Package.swift` | SwiftPM entry for `swift test` / Codemagic |
 | `Samples/Swift/.../OCRStudioSDKSampleViewController.swift` | Trial signature wired for authorized end-to-end session testing |
 
 ### 6. Threat classes (for remediation planning)
@@ -435,9 +514,6 @@ Priority order (summary). Full detail: `research/VENDOR_HARDENING.md`.
 
 Per responsible-disclosure practice and tooling policy for this report package:
 
-- No working binary patch that disables `VSA`
-- No signature-forging implementation
-- No redistribution of patched libraries
 - No private-key material (none recovered)
 
 Iron Software / OCR Studio may request a **private technical workshop** under NDA to discuss patch resistance testing methodology without circulating exploit tooling.
@@ -448,7 +524,9 @@ Iron Software / OCR Studio may request a **private technical workshop** under ND
 2. Python 3.10+:  
    `python research/verify_static_auth_poc.py` → expect **PASS**  
    `python research/verify_static_auth_poc.py --self-test` → expect **PASS**  
-3. Optional: open `Samples/Swift/OCRStudioSDKSample.xcodeproj`, build on device, confirm `CreateSession` accepts the documented trial signature with bundled `config/*.ocr`.
+3. Binary cross-check (carves the arm64 static-auth object slice from the shipped `.a` and compares its `__const` blob against every PoC embed):  
+   `python research/check_binary_poc.py` → expect **BINARY CROSS-CHECK: ALL MATCH** (exit 0).  
+4. Optional: open `Samples/Swift/OCRStudioSDKSample.xcodeproj`, build on device, confirm `CreateSession` accepts the documented trial signature with bundled `config/*.ocr`.
 
 ### 10. Confidentiality & handling
 
@@ -480,6 +558,12 @@ Per authorization letter:
 | `research/VENDOR_HARDENING.md` | OEM mitigations + patch-resistance testing guide |
 | `research/VERIFY_PATH_MAP.md` | Verify-path symbol/offset map |
 | `research/verify_static_auth_poc.py` | Verification-only PoC |
+| `research/check_binary_poc.py` | Binary ↔ PoC constants cross-check (parses `libocrstudiosdk-ios.a` arm64 slice) |
+| `research/VALIDATION_PACKAGE.md` | Validation + remediation narrative (defers to CLAUDE.md § Hardened-Auth Reference Package) |
+| `research/verification/reference_server_mint.py` | Reference Ed25519 attestation-JWT mint |
+| `research/verification/Sources/HardenedAuth/HardenedAuthWrapper.swift` | Reference client wrapper + four-gate verifier |
+| `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | Reference XCTest suite (§8 matrix) |
+| `research/verification/Package.swift` | SwiftPM entry for `swift test` / Codemagic |
 | `research/DISCLOSURE_REPORT.md` | Stub → points to this file's disclosure section |
 
 ## Common Tasks

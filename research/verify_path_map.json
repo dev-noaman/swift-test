@@ -1,0 +1,672 @@
+[
+  {
+    "file": "static_auth.cpp.o.arm64.macho",
+    "size": 1736,
+    "sections": [
+      {
+        "segment": "__TEXT",
+        "section": "__text",
+        "addr": 0,
+        "size": 228,
+        "file_off": 464,
+        "align": 2,
+        "reloff": 1048,
+        "nreloc": 16
+      },
+      {
+        "segment": "__TEXT",
+        "section": "__const",
+        "addr": 228,
+        "size": 195,
+        "file_off": 692,
+        "align": 0,
+        "reloff": 0,
+        "nreloc": 0
+      },
+      {
+        "segment": "__LD",
+        "section": "__compact_unwind",
+        "addr": 424,
+        "size": 160,
+        "file_off": 888,
+        "align": 3,
+        "reloff": 1176,
+        "nreloc": 5
+      }
+    ],
+    "defined_symbols": [
+      {
+        "name": "l001",
+        "kind": "sect",
+        "external": false,
+        "sect_index": 2,
+        "value": 228,
+        "desc": 0,
+        "section": "__TEXT,__const",
+        "section_vma": 228,
+        "offset_in_section": 0,
+        "hint": ""
+      },
+      {
+        "name": "__ZN2se8security8internal3IDBEv",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 172,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 172,
+        "hint": ""
+      },
+      {
+        "name": "__ZN2se8security8internal3VEAEPKcPKh",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 204,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 204,
+        "hint": "Verify External Auth (caller-supplied hash)"
+      },
+      {
+        "name": "__ZN2se8security8internal3VGHEv",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 164,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 164,
+        "hint": ""
+      },
+      {
+        "name": "__ZN2se8security8internal3VSAEPKc",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 180,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 180,
+        "hint": "Verify Static Auth"
+      },
+      {
+        "name": "__ZN2se8security8internal4VCIHEv",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 0,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 0,
+        "hint": "Verify Code Integrity Hash"
+      }
+    ],
+    "undefined_symbols": [
+      {
+        "name": "__ZN2se8security12pkcs1_verifyEPKcPKhS4_",
+        "external": true,
+        "hint": "RSA PKCS#1 v1.5 verify"
+      },
+      {
+        "name": "__ZN2se8security8get_hashEPKhNS0_10StrongTypeINS0_11ByteSizeTagEEE",
+        "external": true,
+        "hint": "SHA-1 via BearSSL"
+      },
+      {
+        "name": "___stack_chk_fail",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "___stack_chk_guard",
+        "external": true,
+        "hint": ""
+      }
+    ],
+    "const_constant_hits": {
+      "EXPECTED_HASH": [
+        {
+          "const_file_off": 175,
+          "vma": 403,
+          "len": 20
+        }
+      ],
+      "RSA_N": [
+        {
+          "const_file_off": 0,
+          "vma": 228,
+          "len": 128
+        }
+      ],
+      "CLIENT_ID": [
+        {
+          "const_file_off": 147,
+          "vma": 375,
+          "len": 27
+        }
+      ],
+      "MARKER_PREFIX": [
+        {
+          "const_file_off": 133,
+          "vma": 361,
+          "len": 14
+        }
+      ],
+      "RSA_E_bytes_00000003": [
+        {
+          "const_file_off": 128,
+          "vma": 356,
+          "len": 4
+        }
+      ]
+    },
+    "text_analysis": {
+      "text_vma": 0,
+      "text_size": 228,
+      "insn_of_interest": 35,
+      "const_address_loads": [],
+      "compare_branch_sites": [
+        {
+          "addr": 84,
+          "off": 84,
+          "word": 3943366943,
+          "kind": "CMP_reg"
+        },
+        {
+          "addr": 140,
+          "off": 140,
+          "word": 3943170367,
+          "kind": "CMP_reg"
+        },
+        {
+          "addr": 144,
+          "off": 144,
+          "word": 1409286273,
+          "kind": "B.cond",
+          "target": 160,
+          "cond": 1
+        },
+        {
+          "addr": 180,
+          "off": 180,
+          "word": 3019899040,
+          "kind": "CBZ",
+          "target": 200,
+          "rt": 0
+        },
+        {
+          "addr": 204,
+          "off": 204,
+          "word": 3019899040,
+          "kind": "CBZ",
+          "target": 224,
+          "rt": 0
+        }
+      ],
+      "bl_sites": [
+        {
+          "addr": 52,
+          "off": 52,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 52
+        },
+        {
+          "addr": 160,
+          "off": 160,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 160
+        }
+      ]
+    },
+    "text_relocs_external": [
+      {
+        "vma": 160,
+        "type": "BRANCH26",
+        "symbol": "___stack_chk_fail",
+        "hint": ""
+      },
+      {
+        "vma": 132,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 128,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 52,
+        "type": "BRANCH26",
+        "symbol": "__ZN2se8security8get_hashEPKhNS0_10StrongTypeINS0_11ByteSizeTagEEE",
+        "hint": "SHA-1 via BearSSL"
+      },
+      {
+        "vma": 40,
+        "type": "PAGEOFF12",
+        "symbol": "l001",
+        "hint": ""
+      },
+      {
+        "vma": 36,
+        "type": "PAGE21",
+        "symbol": "l001",
+        "hint": ""
+      },
+      {
+        "vma": 16,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 12,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 196,
+        "type": "BRANCH26",
+        "symbol": "__ZN2se8security12pkcs1_verifyEPKcPKhS4_",
+        "hint": "RSA PKCS#1 v1.5 verify"
+      },
+      {
+        "vma": 188,
+        "type": "PAGEOFF12",
+        "symbol": "l001",
+        "hint": ""
+      },
+      {
+        "vma": 184,
+        "type": "PAGE21",
+        "symbol": "l001",
+        "hint": ""
+      },
+      {
+        "vma": 220,
+        "type": "BRANCH26",
+        "symbol": "__ZN2se8security12pkcs1_verifyEPKcPKhS4_",
+        "hint": "RSA PKCS#1 v1.5 verify"
+      },
+      {
+        "vma": 216,
+        "type": "PAGEOFF12",
+        "symbol": "l001",
+        "hint": ""
+      },
+      {
+        "vma": 212,
+        "type": "PAGE21",
+        "symbol": "l001",
+        "hint": ""
+      }
+    ],
+    "cstrings": []
+  },
+  {
+    "file": "verify.cpp.o.arm64.macho",
+    "size": 1000,
+    "sections": [
+      {
+        "segment": "__TEXT",
+        "section": "__text",
+        "addr": 0,
+        "size": 224,
+        "file_off": 384,
+        "align": 2,
+        "reloff": 640,
+        "nreloc": 7
+      },
+      {
+        "segment": "__LD",
+        "section": "__compact_unwind",
+        "addr": 224,
+        "size": 32,
+        "file_off": 608,
+        "align": 3,
+        "reloff": 696,
+        "nreloc": 1
+      }
+    ],
+    "defined_symbols": [
+      {
+        "name": "__ZN2se8security12pkcs1_verifyEPKcPKhS4_",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 0,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 0,
+        "hint": "RSA PKCS#1 v1.5 verify"
+      }
+    ],
+    "undefined_symbols": [
+      {
+        "name": "__ZN2se8security18hexstring_to_bytesEPhPKcNS0_10StrongTypeINS0_13HexStrSizeTagEEE",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "___stack_chk_fail",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "___stack_chk_guard",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "_br_rsa_pkcs1_vrfy_get_default",
+        "external": true,
+        "hint": ""
+      }
+    ],
+    "const_constant_hits": {},
+    "text_analysis": {
+      "text_vma": 0,
+      "text_size": 224,
+      "insn_of_interest": 21,
+      "const_address_loads": [],
+      "compare_branch_sites": [
+        {
+          "addr": 40,
+          "off": 40,
+          "word": 3019900008,
+          "kind": "CBZ",
+          "target": 180,
+          "rt": 8
+        },
+        {
+          "addr": 44,
+          "off": 44,
+          "word": 3019899969,
+          "kind": "CBZ",
+          "target": 180,
+          "rt": 1
+        },
+        {
+          "addr": 52,
+          "off": 52,
+          "word": 3019899906,
+          "kind": "CBZ",
+          "target": 180,
+          "rt": 2
+        },
+        {
+          "addr": 164,
+          "off": 164,
+          "word": 3943301407,
+          "kind": "CMP_reg"
+        },
+        {
+          "addr": 196,
+          "off": 196,
+          "word": 3943170367,
+          "kind": "CMP_reg"
+        },
+        {
+          "addr": 200,
+          "off": 200,
+          "word": 1409286305,
+          "kind": "B.cond",
+          "target": 220,
+          "cond": 1
+        }
+      ],
+      "bl_sites": [
+        {
+          "addr": 96,
+          "off": 96,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 96
+        },
+        {
+          "addr": 104,
+          "off": 104,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 104
+        },
+        {
+          "addr": 220,
+          "off": 220,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 220
+        }
+      ]
+    },
+    "text_relocs_external": [
+      {
+        "vma": 220,
+        "type": "BRANCH26",
+        "symbol": "___stack_chk_fail",
+        "hint": ""
+      },
+      {
+        "vma": 188,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 184,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 104,
+        "type": "BRANCH26",
+        "symbol": "_br_rsa_pkcs1_vrfy_get_default",
+        "hint": ""
+      },
+      {
+        "vma": 96,
+        "type": "BRANCH26",
+        "symbol": "__ZN2se8security18hexstring_to_bytesEPhPKcNS0_10StrongTypeINS0_13HexStrSizeTagEEE",
+        "hint": ""
+      },
+      {
+        "vma": 28,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 24,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      }
+    ],
+    "cstrings": []
+  },
+  {
+    "file": "hashing.cpp.o.arm64.macho",
+    "size": 888,
+    "sections": [
+      {
+        "segment": "__TEXT",
+        "section": "__text",
+        "addr": 0,
+        "size": 132,
+        "file_off": 384,
+        "align": 2,
+        "reloff": 552,
+        "nreloc": 8
+      },
+      {
+        "segment": "__LD",
+        "section": "__compact_unwind",
+        "addr": 136,
+        "size": 32,
+        "file_off": 520,
+        "align": 3,
+        "reloff": 616,
+        "nreloc": 1
+      }
+    ],
+    "defined_symbols": [
+      {
+        "name": "__ZN2se8security8get_hashEPKhNS0_10StrongTypeINS0_11ByteSizeTagEEE",
+        "kind": "sect",
+        "external": true,
+        "sect_index": 1,
+        "value": 0,
+        "desc": 0,
+        "section": "__TEXT,__text",
+        "section_vma": 0,
+        "offset_in_section": 0,
+        "hint": "SHA-1 via BearSSL"
+      }
+    ],
+    "undefined_symbols": [
+      {
+        "name": "___stack_chk_fail",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "___stack_chk_guard",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "_br_sha1_init",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "_br_sha1_out",
+        "external": true,
+        "hint": ""
+      },
+      {
+        "name": "_br_sha1_update",
+        "external": true,
+        "hint": ""
+      }
+    ],
+    "const_constant_hits": {},
+    "text_analysis": {
+      "text_vma": 0,
+      "text_size": 132,
+      "insn_of_interest": 14,
+      "const_address_loads": [],
+      "compare_branch_sites": [
+        {
+          "addr": 100,
+          "off": 100,
+          "word": 3943170367,
+          "kind": "CMP_reg"
+        },
+        {
+          "addr": 104,
+          "off": 104,
+          "word": 1409286337,
+          "kind": "B.cond",
+          "target": 128,
+          "cond": 1
+        }
+      ],
+      "bl_sites": [
+        {
+          "addr": 52,
+          "off": 52,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 52
+        },
+        {
+          "addr": 68,
+          "off": 68,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 68
+        },
+        {
+          "addr": 80,
+          "off": 80,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 80
+        },
+        {
+          "addr": 128,
+          "off": 128,
+          "word": 2483027968,
+          "kind": "BL",
+          "target": 128
+        }
+      ]
+    },
+    "text_relocs_external": [
+      {
+        "vma": 128,
+        "type": "BRANCH26",
+        "symbol": "___stack_chk_fail",
+        "hint": ""
+      },
+      {
+        "vma": 92,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 88,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 80,
+        "type": "BRANCH26",
+        "symbol": "_br_sha1_out",
+        "hint": ""
+      },
+      {
+        "vma": 68,
+        "type": "BRANCH26",
+        "symbol": "_br_sha1_update",
+        "hint": ""
+      },
+      {
+        "vma": 52,
+        "type": "BRANCH26",
+        "symbol": "_br_sha1_init",
+        "hint": ""
+      },
+      {
+        "vma": 36,
+        "type": "GOT_PAGEOFF12",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      },
+      {
+        "vma": 32,
+        "type": "GOT_PAGE21",
+        "symbol": "___stack_chk_guard",
+        "hint": ""
+      }
+    ],
+    "cstrings": []
+  }
+]

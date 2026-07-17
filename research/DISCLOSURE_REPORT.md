@@ -179,7 +179,7 @@ An attacker with the xcframework binary identifies the static-auth entry points 
 
 **Mapped mitigations:**
 - **P0 — Crypto upgrade:** A modern signature scheme raises the cost of any patch-based downgrade, but patching must still be assumed possible (see `VENDOR_HARDENING.md` §P0).
-- **P3 — Anti-patch / integrity:** Bind `VCIH` (or its successor) to a code-region hash of the verify path, not only to the client-id string; diversify checks across multiple locations; avoid a single 20-byte constant compare at a fixed offset (see `VENDOR_HARDENING.md` §P3).
+- **P3 — Anti-patch / integrity:** Bind `VCIH` (or its successor) to a code-region hash of the verify path, not only to the client-id string; diversify checks across multiple locations; avoid a single 20-byte constant compare at a fixed offset (see `VENDOR_HARDENING.md` §P3 and § Patch resistance (testing guide) for TR-01…TR-11 test intents).
 - **P2 — Online attestation:** For high-value SKUs, supplement offline auth with short-lived server-issued tokens so a patched binary cannot operate indefinitely offline (see `VENDOR_HARDENING.md` §P2).
 
 ### T3 — Cryptographic weakness of the scheme
@@ -221,7 +221,7 @@ Priority order (summary). Full detail: `research/VENDOR_HARDENING.md`.
 | **P0** | Upgrade to RSA-2048+ (e=65537) or Ed25519; SHA-256+; RSA-PSS or standard DigestInfo PKCS#1; version the auth blob |
 | **P1** | Sign structured claims including `library_build_id` and `config_sha256`; reject mismatch |
 | **P2** | Prefer server-issued short-lived tokens for production; separate trial vs production keypairs; rotate trial keys per customer build |
-| **P3** | Strengthen integrity beyond client-id string hash; assume binary patching will be attempted |
+| **P3** | Strengthen integrity beyond client-id string hash; assume binary patching will be attempted — test guide: `VENDOR_HARDENING.md` § Patch resistance (testing guide) |
 
 ---
 

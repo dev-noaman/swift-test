@@ -181,7 +181,7 @@ Tooling notes for continuing binary analysis of this SDK — these cost real tim
 | Codemagic CI (auto on push to `master`) | Repo `dev-noaman/swift-test`, workflow **Hardened auth XCTest** (`codemagic.yaml`) |
 | Green CI — Swift XCTest | Commit `6794805`, build `6a5a9ffbb20639fbd1f646eb` |
 | Green CI — Swift + native C++ selftest | Commit `8c8a14f`, build `6a5aa19d315dfd6e6d042593` |
-| Native drop-in kit (C API + ObjC++ category + Makefile selftest) | `research/native_hardened/` (+ copies under `OCRStudioSDKCore/`) |
+| Native drop-in kit (`CreateSessionHardened` C/ObjC++ + 8-gate selftest) | `research/native_hardened/` — portable Ed25519 default (zero deps); optional libsodium. Copies under `OCRStudioSDKCore/`. See § Native hardened kit below. |
 | High-level SDK gate: JWT before `createSession` | `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift`; `OCRStudioSDKInstance.initVideoSession` (`hardenedAuthEnabled=YES` by default) |
 | Sample project wires hardened Swift source | `Samples/Swift/OCRStudioSDKSample.xcodeproj` |
 | Vendor ship doc | `SHIP_TO_VENDOR.md` |
@@ -211,21 +211,63 @@ Tooling notes for continuing binary analysis of this SDK — these cost real tim
 | `research/verification/Sources/HardenedAuth/CreateSessionHardened.swift` | Phase-3 gate (legacy `CreateSession` retired) |
 | `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | §8 matrix + fully-patched tests |
 | `research/verification/reference_server_mint.py` | Ed25519 JWT mint (`--gen-key` / `--mint` / `--serve`) |
-| `research/native_hardened/` | C++ `hardened_auth` + ObjC++ category + `make selftest` (libsodium) |
+| `research/native_hardened/` | Native CreateSessionHardened kit — **details in § Native hardened kit** (this file is SoT; `README.md` defers here) |
 | `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift` | **Shipped high-level gate** used by `OCRStudioSDKInstance` |
-| `OCRStudioSDKCore/include/ocrstudiosdk/hardened_auth.h` | Native C API (vendor merge) |
-| `OCRStudioSDKCore/wrap/.../OCRStudioSDKInstance+Hardened.*` | ObjC++ `createSessionHardened…` (vendor merge) |
-| `codemagic.yaml` | CI: Swift tests + native selftest |
+| `OCRStudioSDKCore/include/ocrstudiosdk/hardened_auth.h` | Native C API (vendor merge copy) |
+| `OCRStudioSDKCore/wrap/.../OCRStudioSDKInstance+Hardened.*` + `hardened_auth.cpp` | ObjC++ / C++ vendor merge copies |
+| `codemagic.yaml` | CI: Swift tests + native selftest (`make selftest`, portable) |
 | `SHIP_TO_VENDOR.md` | Handoff checklist for OCR Studio |
 
-### Attestation JWT wire contract (MUST match across Python mint ↔ Swift verify)
+### Native hardened kit (`research/native_hardened/`) — source of truth
+
+> Vendor drop-in implementing VALIDATION_PACKAGE §6.6 with the **same JWT/gate contract** as Swift (`research/verification`) and Python mint (`reference_server_mint.py`).  
+> Narrative pointer only elsewhere: `research/native_hardened/README.md` defers to **this subsection**.
+
+#### Layout
+
+| Path | Role |
+|------|------|
+| `include/ocrstudiosdk/hardened_auth.h` | C API: `OCRAuthGateStatus`, policy, `ocr_hardened_auth_verify`, `ocr_create_session_hardened_check` |
+| `src/hardened_auth.cpp` | JWT parse + gate order; calls `hardened_ed25519_verify` (backend-agnostic) |
+| `src/ed25519_verify.h` | Ed25519 verify facade |
+| `src/ed25519_verify_portable.c` | **Default** backend: TweetNaCl-derived Ed25519 + SHA-512, **zero external deps** |
+| `src/ed25519_constants.h` | Machine-generated SHA-512 / Ed25519 constants (Python-verified vs TweetNaCl / `hashlib`) |
+| `include/objcocrstudiosdk/OCRStudioSDKInstance+Hardened.h` | ObjC++ `createSessionHardenedWithSignature:…` |
+| `src/OCRStudioSDKInstance+Hardened.mm` | Category impl; bake production server pubkey before ship |
+| `tests/hardened_auth_selftest.cpp` | 8-gate selftest vs deterministic PyNaCl-minted vectors |
+| `Makefile` | `make selftest` / `make selftest USE_LIBSODIUM=1` |
+| `VENDOR_NATIVE_INTEGRATION.md` | Merge steps into OEM engine tree |
+
+#### Ed25519 backends (compile-time)
+
+```bash
+cd research/native_hardened
+make selftest                  # portable — ZERO external deps (default)
+make selftest USE_LIBSODIUM=1  # libsodium — brew install libsodium pkg-config
+```
+
+- **portable:** public-domain TweetNaCl-derived verify; constants Python-verified; algorithm validated against PyNaCl before translation. Compiles anywhere a C99/C++17 toolchain exists (no make required if you invoke `clang++`/`g++` by hand).
+- **libsodium:** thin wrap of `crypto_sign_verify_detached` where a vetted libsodium is preferred.
+- Vendor may swap either for in-tree BearSSL/HACL* as long as `hardened_ed25519_verify()` semantics match.
+
+#### Self-test coverage (8 assertions)
+
+Valid JWT accepted; empty JWT rejected (fully patched); malformed legacy rejected; nonce replay rejected; build mismatch; config mismatch; expired; forged key (`jwtSignatureBad`).
+
+#### Honest scope
+
+- Kit is **source for OEM merge + rebuild** — does **not** rewrite trial `libocrstudiosdk.a`.
+- Compile-validated on **Codemagic** (`make -C research/native_hardened selftest`). Not claimed built on the Windows research host.
+- Gate order + vectors additionally proven by a Python reimplementation of the same 8 assertions (all pass).
+
+### Attestation JWT wire contract (MUST match across Python mint ↔ Swift / native verify)
 
 - Compact JWS, `alg="EdDSA"`; header is **exactly** `{"alg":"EdDSA","typ":"JWT"}`.
 - `signing_input = base64url(header) + "." + base64url(payload)` — base64url, **no `=` padding**.
 - Signature = **raw 64-byte Ed25519** over the **ASCII** bytes of `signing_input` (not DER, no JOSE-lib wrapping).
 - `jwt = signing_input + "." + base64url(signature)`.
-- Python signs with **PyNaCl `SigningKey`** (chosen over PyJWT for byte-exactness). Swift verifies with CryptoKit `publicKey.isValidSignature(sig, for: signingInputASCII)`.
-- Claims (8, this order): `sub, lib_build_id, platform, config_sha256, iat, exp, nonce, aud`. Decode is by name (JSONDecoder), so emit order only affects the signed bytes, not parsing.
+- Python signs with **PyNaCl `SigningKey`** (chosen over PyJWT for byte-exactness). Swift verifies with CryptoKit `publicKey.isValidSignature(sig, for: signingInputASCII)`. Native verifies via `hardened_ed25519_verify` (portable TweetNaCl or libsodium).
+- Claims (8, this order): `sub, lib_build_id, platform, config_sha256, iat, exp, nonce, aud`. Decode is by name (JSONDecoder / field extract), so emit order only affects the signed bytes, not parsing.
 
 ### Baked policy constants (reference build)
 
@@ -259,8 +301,8 @@ Result maps to `OCRAuthGateStatus { ok=0, legacyFail, jwtSignatureBad, jwtExpire
   "$PY" research/verification/reference_server_mint.py --gen-key --seed <64-hex>
   "$PY" research/verification/reference_server_mint.py --mint --priv <64-hex> --config-sha256 <64-hex> --now <epoch>
   ```
-- **Swift will not compile on this Windows host.** Use Codemagic (`codemagic.yaml` → **Hardened auth XCTest**) or any Mac: `cd research/verification && swift test` and `cd research/native_hardened && make selftest` (needs `brew install libsodium`).
-- Proven green on Codemagic (see Done table above). A green run against a *vendor-shipped* hardened `.a` (`VALIDATION_PACKAGE.md` Appendix A steps 9–10) is still **pending**.
+- **Swift/native will not compile on this Windows host.** Use Codemagic (`codemagic.yaml` → **Hardened auth XCTest**) or any Mac with a C++/Swift toolchain. Native selftest needs **no libsodium** when using the default portable backend (`make selftest`).
+- Full native kit rules: **§ Native hardened kit** above (SoT). Proven green on Codemagic (Done table). Vendor-shipped hardened `.a` re-test (Appendix A steps 9–10) still **pending**.
 - `reference_server_mint.py` depends on **Flask + PyNaCl** (not PyJWT, despite Appendix A step 2 listing it). Deterministic keygen/mint via `--seed` / `--now` for reproducible tests.
 - GitHub delivery repo for CI/vendor handoff: `dev-noaman/swift-test` (do not commit `OCRStudioSDKCore/lib/*.a` — gitignored).
 

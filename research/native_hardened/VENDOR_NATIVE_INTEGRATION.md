@@ -2,19 +2,37 @@
 
 Authorized security-research drop-in for OCR Studio engine team.
 
+**Source of truth** for layout, Ed25519 backends, selftest scope, and JWT contract:  
+repo root `CLAUDE.md` § **Native hardened kit (`research/native_hardened/`)**.
+
 ## What this package is
 
 | Path | Merge into |
 |------|------------|
 | `include/ocrstudiosdk/hardened_auth.h` | Public / internal C API next to `ocr_studio_instance.h` |
-| `src/hardened_auth.cpp` | Engine security TU (link **libsodium** or replace `crypto_sign_verify_detached` with your BearSSL/HACL* Ed25519) |
+| `src/hardened_auth.cpp` | Engine security TU — calls `hardened_ed25519_verify` (backend-agnostic) |
+| `src/ed25519_verify.h` / `src/ed25519_verify_portable.c` | Ed25519 verify: portable (default) or `-DUSE_LIBSODIUM`. Swap for your BearSSL/HACL* if preferred. |
+| `src/ed25519_constants.h` | Machine-generated, Python-verified SHA-512 + Ed25519 constants (portable backend) |
 | `include/objcocrstudiosdk/OCRStudioSDKInstance+Hardened.h` | ObjC++ wrap public headers |
 | `src/OCRStudioSDKInstance+Hardened.mm` | ObjC++ wrap sources; bake real Ed25519 **server public key** |
+
+### Ed25519 backend switch
+
+```bash
+make selftest                 # portable, no external deps (default)
+make selftest USE_LIBSODIUM=1  # libsodium (brew install libsodium pkg-config)
+```
+
+The portable backend is a public-domain TweetNaCl-derived verify; its constants
+are Python-verified against canonical TweetNaCl / `hashlib`, and the algorithm
+was validated against PyNaCl before translation. Both backends satisfy the same
+`hardened_ed25519_verify()` contract, so `hardened_auth.cpp` is unchanged either way.
 
 Green CI evidence (assessor):
 
 - Swift package: Codemagic workflow **Hardened auth XCTest**
-- Native C++: Codemagic step `make -C research/native_hardened selftest`
+- Native C++: Codemagic step `make -C research/native_hardened selftest` (portable)
+  and, optionally, `make -C research/native_hardened selftest USE_LIBSODIUM=1`
 
 ## Wire contract (must match Swift / Python mint)
 

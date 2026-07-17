@@ -212,7 +212,8 @@ Tooling notes for continuing binary analysis of this SDK — these cost real tim
 | `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | §8 matrix + fully-patched tests |
 | `research/verification/reference_server_mint.py` | Ed25519 JWT mint (`--gen-key` / `--mint` / `--serve`) |
 | `research/native_hardened/` | Native CreateSessionHardened kit — **details in § Native hardened kit** (this file is SoT; `README.md` defers here) |
-| `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift` | **Shipped high-level gate** used by `OCRStudioSDKInstance` |
+| `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift` | **Shipped high-level gate** (CryptoKit Ed25519 mint+verify) used by `OCRStudioSDKInstance` |
+| `OCRStudioSDK/Core/OCRStudioSDKInstance.mm` | `runHardenedAuthGateOrThrow` gates **every** `createSession` site (video, `processSingleImage:`, `compareFacesFromDocument:`) fail-closed |
 | `OCRStudioSDKCore/include/ocrstudiosdk/hardened_auth.h` | Native C API (vendor merge copy) |
 | `OCRStudioSDKCore/wrap/.../OCRStudioSDKInstance+Hardened.*` + `hardened_auth.cpp` | ObjC++ / C++ vendor merge copies |
 | `codemagic.yaml` | CI: Swift tests + native selftest (`make selftest`, portable) |
@@ -305,6 +306,21 @@ Result maps to `OCRAuthGateStatus { ok=0, legacyFail, jwtSignatureBad, jwtExpire
 - Full native kit rules: **§ Native hardened kit** above (SoT). Proven green on Codemagic (Done table). Vendor-shipped hardened `.a` re-test (Appendix A steps 9–10) still **pending**.
 - `reference_server_mint.py` depends on **Flask + PyNaCl** (not PyJWT, despite Appendix A step 2 listing it). Deterministic keygen/mint via `--seed` / `--now` for reproducible tests.
 - GitHub delivery repo for CI/vendor handoff: `dev-noaman/swift-test` (do not commit `OCRStudioSDKCore/lib/*.a` — gitignored).
+
+### Hard-won lessons (building the hardened kit + patching the shipped SDK)
+
+Cost real time to figure out; read before touching the native crypto or the ObjC++ gate:
+
+- **Port crypto by prototype-in-Python first, never hand-transcribe.** The portable Ed25519 was de-risked by: (1) implement the algorithm in pure Python, (2) validate it against **PyNaCl** on real minted tokens (valid PASS / tampered FAIL / forged FAIL), (3) **generate every constant from Python** into `ed25519_constants.h`, then (4) translate to C. Never hand-type crypto constants. Generator: `scratchpad/gen_c.py`.
+- **The `gf[16]` limbs are self-checking:** the dumped D/X/Y/I limbs must equal canonical TweetNaCl **byte-for-byte** (e.g. `gf_D = {0x78a3,0x1359,0x4dca,…}`). If they don't, the field math is wrong. That match is your proof the constants are right.
+- **SHA-512 K/H0 need EXACT integer roots.** `p**(1/3)` in float loses 64-bit fractional precision → wrong constants. Use integer roots: `H0=math.isqrt(p<<128)&MASK64`, `K=icbrt(p<<192)&MASK64`. Also the round-constant table needs **80 primes** (80th prime is 409 → iterate `range(2,420)`, not 312). Self-check the whole SHA-512 against `hashlib` before trusting it.
+- **Windows cp1252 mojibake in generated C.** Writing UTF-8 em-dashes (`—`) into `.c`/`.h` via Python's default encoding corrupts them (`�`). Emit **ASCII-only** in generated sources, or open with `encoding='utf-8'`.
+- **Prove the gate without a compiler.** No C/Swift/Xcode toolchain on this host, so the native self-test's expected results were reproduced by a **Python reimplementation of the exact gate order** against the embedded vectors (all 8 assertions), and the pre-written selftest vectors were **validated with PyNaCl** (pubkey derives from seed `00112233…`, JWT verifies, claims match) before building around them — don't trust hand-typed vectors.
+- **Audit EVERY call site of the protected primitive.** The shipped patch originally gated only `initVideoSession`; `processSingleImage:` and `compareFacesFromDocument:` still called `createSession` directly (auth bypass). When adding a gate, grep all `createSession` sites and route them through one fail-closed helper (`runHardenedAuthGateOrThrow`).
+- **@objc Swift → ObjC selector renaming bites.** `authorizeSession(configPath:…)` becomes `authorizeSessionWithConfigPath:…`; `verify(jwt:…)` → `verifyWithJwt:…`; `configSHA256Hex(ofFileAt:)` → `configSHA256HexOfFileAt:`. The ObjC++ caller must use the renamed selector, not the Swift name.
+- **The Swift gate is only visible via the generated `-Swift.h`.** `OCRStudioSDKInstance.mm` guards the gate with `#if __has_include("OCRStudioSDKSample-Swift.h")`; that header exists only inside the app target. Outside it, the `#else` branch **refuses the session** rather than silently skipping the gate.
+- **Scope caveat of the shipped patch:** the trial gate **self-mints** with a baked demo key (`trialSeedHex`) and verifies with its own public key — a *reference/demo*, not a security boundary. It also sits **in front of** the legacy `createSession` in the ObjC++ wrapper; the closed engine still enforces only RSA-1024 `VSA`. Real hardening = vendor bakes their **server** public key (drop self-mint) **and** merges `research/native_hardened` gates **into the engine**.
+- **Re-list before assuming.** The `native_hardened/` tree and the SwiftPM package were scaffolded in parallel between tool calls; a stale `find` said "MISSING" moments before files existed. Re-list / re-read before writing, and `Read` a pre-existing file before `Write`.
 
 ## Building & Running
 

@@ -70,7 +70,10 @@
 @property (nonatomic, strong, nullable) NSString * currentInstruction;
 @property (nonatomic, readonly, strong, nullable) NSDictionary *instructions;
 
-/// When YES (default), initVideoSession runs CreateSessionHardened gates (JWT) before legacy createSession.
+/// When YES (default), EVERY session-creating entry point (initVideoSession,
+/// processSingleImage:, compareFacesFromDocument:andSelfie:) runs the
+/// CreateSessionHardened JWT gates before the legacy createSession, and throws
+/// OCRStudioSDKHardenedAuthError (fail-closed) if any gate fails.
 @property (nonatomic, assign) BOOL hardenedAuthEnabled;
 /// Optional override JWT from vendor Auth Server; if nil, trial auto-mint is used when hardenedAuthEnabled.
 @property (nonatomic, copy, nullable) NSString *attestationJWT;

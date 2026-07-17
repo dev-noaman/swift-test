@@ -9,8 +9,6 @@
 #include <cstring>
 #include <string>
 
-#include <sodium.h>
-
 static int failures = 0;
 
 static void expect(bool ok, const char* name) {
@@ -40,6 +38,26 @@ static const char* kJwt =
     "cnN0dWRpby1zZGsifQ.X7GUaaOU-Oczx9tVKT8a8ODFOwywM6e0kq7MBNYXqsQ0-rI-0L3vmDGf3BL4_"
     "MqXj1PtEipaIJWvs_LVZ7D0AQ";
 
+/* Same signing key as kJwt, but exp is in the past (iat 1784000000, ttl 1h). */
+static const char* kJwtExpired =
+    "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvY3JzdHVkaW9fYXJhZmF0Z3JvdXBfdHJp"
+    "YWwiLCJsaWJfYnVpbGRfaWQiOiIxLjMuMS1pb3MtYXJtNjQtdHJpYWwtMjAyNlEzIiwicGxhdGZvcm0i"
+    "OiJpb3MiLCJjb25maWdfc2hhMjU2IjoiMmRhYTEyZDM0YzBmM2Q0ZTE5YWFlZjk5ZWE5OWUzZTdjYTQz"
+    "ZDExZGNjZmZhMDljYTU3NTFjOWIyOTJiNmZkZCIsImlhdCI6MTc4NDAwMDAwMCwiZXhwIjoxNzg0MDAz"
+    "NjAwLCJub25jZSI6ImIxMTExMTExLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMiIsImF1ZCI6Im9j"
+    "cnN0dWRpby1zZGsifQ.qwRO0xzuVv11kVy_EQDc6iuSKa5VyAYAuzjEo-lnghJHpxgMpA2pv6KW9iPIN"
+    "WgceTB3CR9oR0_kmfb30WxYBw";
+
+/* Identical claims to kJwt but signed by a DIFFERENT key (seed 2222..) -> sig fails. */
+static const char* kJwtForged =
+    "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJvY3JzdHVkaW9fYXJhZmF0Z3JvdXBfdHJp"
+    "YWwiLCJsaWJfYnVpbGRfaWQiOiIxLjMuMS1pb3MtYXJtNjQtdHJpYWwtMjAyNlEzIiwicGxhdGZvcm0i"
+    "OiJpb3MiLCJjb25maWdfc2hhMjU2IjoiMmRhYTEyZDM0YzBmM2Q0ZTE5YWFlZjk5ZWE5OWUzZTdjYTQz"
+    "ZDExZGNjZmZhMDljYTU3NTFjOWIyOTJiNmZkZCIsImlhdCI6MTc4NDMzMjgwMCwiZXhwIjoxNzg0NDE5"
+    "MjAwLCJub25jZSI6ImMyMjIyMjIyLTAwMDAtNDAwMC04MDAwLTAwMDAwMDAwMDAwMyIsImF1ZCI6Im9j"
+    "cnN0dWRpby1zZGsifQ.qDu_Q0tNsX80KN5P4eyCzeDAK4gCIqntkJ0jwCsDKBjgCydQPkp9wcv9GRbF6"
+    "WT-m_TGdB8CCPZvZuuF1UdTBQ";
+
 static const int64_t kNow = 1784332800;
 
 /* 256 hex of 'a' — well-formed legacy smoke only */
@@ -60,11 +78,6 @@ static OCRHardenedAuthPolicy Policy(const char* build = "1.3.1-ios-arm64-trial-2
 }
 
 int main() {
-  if (sodium_init() < 0) {
-    std::fprintf(stderr, "sodium_init failed\n");
-    return 2;
-  }
-
   OCRNonceLRU* lru = ocr_nonce_lru_create(1024);
   auto p = Policy();
   std::string legacy = FakeLegacySig();
@@ -97,9 +110,21 @@ int main() {
              OCRAuthGateStatusConfigMismatch,
          "config_mismatch_rejected");
 
+  OCRNonceLRU* lru4 = ocr_nonce_lru_create(1024);
+  expect(ocr_create_session_hardened_check(&p, lru4, nullptr, legacy.c_str(), kJwtExpired, kCfg,
+                                           kNow) == OCRAuthGateStatusJWTExpired,
+         "expired_attestation_rejected");
+
+  OCRNonceLRU* lru5 = ocr_nonce_lru_create(1024);
+  expect(ocr_create_session_hardened_check(&p, lru5, nullptr, legacy.c_str(), kJwtForged, kCfg,
+                                           kNow) == OCRAuthGateStatusJWTSignatureBad,
+         "forged_key_signature_rejected");
+
   ocr_nonce_lru_destroy(lru);
   ocr_nonce_lru_destroy(lru2);
   ocr_nonce_lru_destroy(lru3);
+  ocr_nonce_lru_destroy(lru4);
+  ocr_nonce_lru_destroy(lru5);
 
   if (failures) {
     std::fprintf(stderr, "\n%d failure(s)\n", failures);

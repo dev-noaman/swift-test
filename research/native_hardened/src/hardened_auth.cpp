@@ -14,7 +14,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include <sodium.h>
+#include "ed25519_verify.h" /* backend-agnostic: portable default or -DUSE_LIBSODIUM */
 
 struct OCRNonceLRU {
   size_t capacity;
@@ -136,9 +136,6 @@ OCRAuthGateStatus ocr_hardened_auth_verify(
   if (!policy || !jwt || !config_sha256_hex || !policy->server_pubkey) {
     return OCRAuthGateStatusJWTSignatureBad;
   }
-  if (sodium_init() < 0) {
-    return OCRAuthGateStatusJWTSignatureBad;
-  }
 
   /* Split jwt into 3 parts */
   const char* p1 = strchr(jwt, '.');
@@ -159,10 +156,10 @@ OCRAuthGateStatus ocr_hardened_auth_verify(
     return OCRAuthGateStatusJWTSignatureBad;
   }
 
-  if (crypto_sign_verify_detached(sig.data(),
-                                  (const unsigned char*)signing_input.data(),
-                                  signing_input.size(),
-                                  policy->server_pubkey) != 0) {
+  if (hardened_ed25519_verify(sig.data(),
+                              (const unsigned char*)signing_input.data(),
+                              (unsigned long long)signing_input.size(),
+                              policy->server_pubkey) != 1) {
     return OCRAuthGateStatusJWTSignatureBad;
   }
 

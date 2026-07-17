@@ -27,11 +27,45 @@ workflows:
           cd research/verification
           swift --version
           swift test --parallel 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-swift-test.log"
-      - name: Run native hardened_auth C++ selftest
+      - name: Run native hardened_auth C++ selftest (portable Ed25519, zero-dep)
         script: |
           set -euo pipefail
           cd research/native_hardened
           make clean selftest 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-native-test.log"
+      - name: Run native hardened_auth C++ selftest (libsodium backend)
+        script: |
+          set -euo pipefail
+          cd research/native_hardened
+          make clean selftest USE_LIBSODIUM=1 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-native-libsodium.log"
+      - name: Compile patched shipped SDK sources (no engine link)
+        script: |
+          set -euxo pipefail
+          # The engine .a (184 MB) is gitignored / >GitHub 100MB limit, so we cannot
+          # LINK a full app here. We compile the patched shipped sources to prove the
+          # gate changes build. Swift gate first (also emits its ObjC interface so the
+          # ObjC++ __has_include gate branch actually compiles), then the ObjC++ layer.
+          SIM_TARGET="arm64-apple-ios15.0-simulator"
+          mkdir -p "$CM_BUILD_DIR/gen"
+          xcrun -sdk iphonesimulator swiftc \
+            -target "$SIM_TARGET" \
+            -module-name OCRStudioSDKSample \
+            -parse-as-library \
+            -emit-module -emit-module-path "$CM_BUILD_DIR/gen/OCRStudioSDKSample.swiftmodule" \
+            -emit-objc-header-path "$CM_BUILD_DIR/gen/OCRStudioSDKSample-Swift.h" \
+            OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift \
+            2>&1 | tee "$CM_BUILD_DIR/shipped-swift-gate-compile.log"
+          xcrun -sdk iphonesimulator clang -fsyntax-only -x objective-c++ -std=gnu++17 -fobjc-arc \
+            -target "$SIM_TARGET" \
+            -I "$CM_BUILD_DIR/gen" \
+            -I OCRStudioSDK/Core \
+            -I OCRStudioSDKCore/wrap/objcocrstudiosdk/include \
+            -I OCRStudioSDKCore/include \
+            OCRStudioSDK/Core/OCRStudioSDKInstance.mm \
+            2>&1 | tee "$CM_BUILD_DIR/shipped-objcpp-compile.log"
+          echo "PATCHED SHIPPED SDK: sources compiled OK"
     artifacts:
       - hardened-auth-swift-test.log
       - hardened-auth-native-test.log
+      - hardened-auth-native-libsodium.log
+      - shipped-swift-gate-compile.log
+      - shipped-objcpp-compile.log

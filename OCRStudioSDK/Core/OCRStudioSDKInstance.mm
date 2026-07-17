@@ -272,6 +272,53 @@
   }
 }
 
+// Patched SDK: run JWT attestation gates (CreateSessionHardened) before ANY legacy
+// createSession. Fail-closed: throws OCRStudioSDKHardenedAuthError on gate failure.
+// Called from every session-creating entry point (video, single-image, face-match).
+- (void) runHardenedAuthGateOrThrow {
+  if (!self.hardenedAuthEnabled) {
+    return;
+  }
+#if __has_include("OCRStudioSDKSample-Swift.h") || __has_include("OCRStudioSDKSampleRFID-Swift.h")
+  NSError *authErr = nil;
+  NSString *jwt = self.attestationJWT;
+  if (jwt.length == 0) {
+    NSString *minted = nil;
+    NSInteger st = [OCRStudioSDKHardenedAuth authorizeSessionWithConfigPath:self.configPath
+                                                                    buildId:self.libBuildId
+                                                                     outJWT:&minted
+                                                                      error:&authErr];
+    if (st != 0 || minted.length == 0) {
+      @throw [NSException
+            exceptionWithName:@"OCRStudioSDKHardenedAuthError"
+            reason:(authErr.localizedDescription ?: @"hardened auth failed")
+            userInfo:@{@"gateStatus": @(st)}];
+    }
+    jwt = minted;
+    self.attestationJWT = minted;
+  } else {
+    NSString *cfgHash = [OCRStudioSDKHardenedAuth configSHA256HexOfFileAt:self.configPath];
+    NSInteger st = [OCRStudioSDKHardenedAuth verifyWithJwt:jwt
+                                          configSHA256Hex:cfgHash
+                                                  buildId:self.libBuildId
+                                                      now:[[NSDate date] timeIntervalSince1970]];
+    if (st != 0) {
+      @throw [NSException
+            exceptionWithName:@"OCRStudioSDKHardenedAuthError"
+            reason:[NSString stringWithFormat:@"hardened gate failed: %ld", (long)st]
+            userInfo:@{@"gateStatus": @(st)}];
+    }
+  }
+  NSLog(@"Hardened auth OK (JWT length %lu)", (unsigned long)jwt.length);
+#else
+  NSLog(@"WARNING: hardenedAuthEnabled but Swift gate not linked; refusing session");
+  @throw [NSException
+        exceptionWithName:@"OCRStudioSDKHardenedAuthError"
+        reason:@"OCRStudioSDKHardenedAuth.swift not linked into target"
+        userInfo:nil];
+#endif
+}
+
 - (void) initVideoSession {
   if (!self.engineInitialized) {
     NSException* exc = [NSException
@@ -283,50 +330,7 @@
 
   NSLog(@"session params %@", session_params.jsonString);
 
-  // Patched SDK: JWT attestation gates (CreateSessionHardened) before legacy createSession.
-  if (self.hardenedAuthEnabled) {
-#if __has_include("OCRStudioSDKSample-Swift.h") || __has_include("OCRStudioSDKSampleRFID-Swift.h")
-    NSError *authErr = nil;
-    NSString *jwt = self.attestationJWT;
-    if (jwt.length == 0) {
-      NSString *minted = nil;
-      NSInteger st = [OCRStudioSDKHardenedAuth authorizeSessionWithConfigPath:self.configPath
-                                                                      buildId:self.libBuildId
-                                                                       outJWT:&minted
-                                                                        error:&authErr];
-      if (st != 0 || minted.length == 0) {
-        NSException* exc = [NSException
-              exceptionWithName:@"OCRStudioSDKHardenedAuthError"
-              reason:(authErr.localizedDescription ?: @"hardened auth failed")
-              userInfo:@{@"gateStatus": @(st)}];
-        @throw exc;
-      }
-      jwt = minted;
-      self.attestationJWT = minted;
-    } else {
-      NSString *cfgHash = [OCRStudioSDKHardenedAuth configSHA256HexOfFileAt:self.configPath];
-      NSInteger st = [OCRStudioSDKHardenedAuth verifyWithJwt:jwt
-                                            configSHA256Hex:cfgHash
-                                                    buildId:self.libBuildId
-                                                        now:[[NSDate date] timeIntervalSince1970]];
-      if (st != 0) {
-        NSException* exc = [NSException
-              exceptionWithName:@"OCRStudioSDKHardenedAuthError"
-              reason:[NSString stringWithFormat:@"hardened gate failed: %ld", (long)st]
-              userInfo:@{@"gateStatus": @(st)}];
-        @throw exc;
-      }
-    }
-    NSLog(@"Hardened auth OK (JWT length %lu)", (unsigned long)jwt.length);
-#else
-    NSLog(@"WARNING: hardenedAuthEnabled but Swift gate not linked; refusing session");
-    NSException* exc = [NSException
-          exceptionWithName:@"OCRStudioSDKHardenedAuthError"
-          reason:@"OCRStudioSDKHardenedAuth.swift not linked into target"
-          userInfo:nil];
-    @throw exc;
-#endif
-  }
+  [self runHardenedAuthGateOrThrow];
 
   @synchronized (self.session) {
     self.session = [self.engine
@@ -460,6 +464,7 @@ int getRotationsByOrientation(UIDeviceOrientation orientation) {
 
 - (nonnull OBJCOCRStudioSDKResult*) processSingleImage:(nonnull OBJCOCRStudioSDKImageRef *)image {
   NSLog(@"%@", session_params.jsonString);
+  [self runHardenedAuthGateOrThrow];   // patched SDK: gate single-image session creation
   session = [self.engine createSession:self.signature
                  withJsonSessionParams:self.session_params.jsonString
                           withDelegate:nil];
@@ -516,7 +521,8 @@ int getRotationsByOrientation(UIDeviceOrientation orientation) {
 - (OBJCOCRStudioSDKResult *) compareFacesFromDocument:(nonnull OBJCOCRStudioSDKImageRef *)photo
                                             andSelfie:(nonnull OBJCOCRStudioSDKImageRef *)image {
   @try {
-    
+    [self runHardenedAuthGateOrThrow];   // patched SDK: gate face-matching session creation
+
     NSDictionary *face_session_params = @{@"session_type": @"face_matching", @"target_group_type": @"default"};
     NSString *face_session_params_json = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:face_session_params options:0 error:nil] encoding:NSUTF8StringEncoding];
     

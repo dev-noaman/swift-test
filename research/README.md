@@ -18,6 +18,7 @@ Authorized research only (`Official Authorization for Security Research_ocrstudi
 | `verification/Package.swift` | SwiftPM package for Codemagic / `swift test` |
 | `verification/Sources/HardenedAuth/HardenedAuthWrapper.swift` | Reference client wrapper: four-gate verifier + Keychain token cache (§6) |
 | `verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | XCTest suite proving vuln-before / hardened-after (§8) |
+| `native_hardened/` | **Vendor drop-in** C++/ObjC++ `CreateSessionHardened` + `make selftest` |
 
 ```bash
 python verify_static_auth_poc.py

@@ -15,12 +15,23 @@ workflows:
           include: true
       cancel_previous_builds: true
     scripts:
-      - name: Run HardenedAuth package tests
+      - name: Install libsodium
+        script: |
+          set -euo pipefail
+          brew list libsodium >/dev/null 2>&1 || brew install libsodium
+          brew list pkg-config >/dev/null 2>&1 || brew install pkg-config
+          pkg-config --modversion libsodium
+      - name: Run HardenedAuth Swift package tests
         script: |
           set -euo pipefail
           cd research/verification
           swift --version
-          swift test --parallel 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-test.log"
-          # Fail the build if any test failed (swift test exit code already does this).
+          swift test --parallel 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-swift-test.log"
+      - name: Run native hardened_auth C++ selftest
+        script: |
+          set -euo pipefail
+          cd research/native_hardened
+          make clean selftest 2>&1 | tee "$CM_BUILD_DIR/hardened-auth-native-test.log"
     artifacts:
-      - hardened-auth-test.log
+      - hardened-auth-swift-test.log
+      - hardened-auth-native-test.log

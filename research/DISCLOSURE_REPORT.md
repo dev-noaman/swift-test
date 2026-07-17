@@ -131,9 +131,30 @@ Described without exploit code. Severity assumes a motivated integrator or attac
 
 ### T1 — Signature theft / clone
 
-**Vector:** Extract 256-hex signature from app binary / source; reuse with the same library build.  
-**Why it works:** Offline verify; signature not bound to bundle ID, device, or time.  
-**Mitigation:** Server-delivered short-lived tokens; bind payload to app/build/config (see §7).
+**Vector:** Extract the 256-hex personalized signature from an app binary or source tree and reuse it with the same library build.
+
+**Scenario:**
+An integrator or attacker who has access to a shipped IPA or source repository can locate the signature string passed to `CreateSession`. Because verification is performed entirely offline, the same string can be copied into another app that embeds the identical `ocrstudiosdk.xcframework` build. The second app will then pass static auth without any relationship to the original licensee.
+
+**Prerequisites:**
+- Access to a compiled app binary or source that contains the trial/production signature.
+- The destination app must embed the same library build (same embedded public key and expected digest).
+- No online entitlement check is enforced by the SDK.
+
+**Impact:**
+- License cloning across unrelated apps or organizations for the same library build.
+- Trial signatures can be redistributed and used past intended evaluation scope.
+- Loss of license inventory control for the OEM.
+
+**Observable indicators:**
+- Identical 256-hex signatures appearing in unrelated app bundles.
+- Session success on devices or builds not associated with the licensed customer.
+- Absence of any server-side license telemetry or revocation capability.
+
+**Mapped mitigations:**
+- **P2 — Operational controls:** Prefer server-delivered short-lived tokens over shipping the signature in the binary (see `VENDOR_HARDENING.md` §P2).
+- **P1 — Stronger license binding:** Sign a structured payload that includes `library_build_id`, platform, and validity window so a stolen signature cannot be replayed onto a different product or build (see §7 and `VENDOR_HARDENING.md` §P1).
+- **P2 — Key separation:** Use separate trial and production keypairs, and rotate trial keys per customer build (see `VENDOR_HARDENING.md` §P2).
 
 ### T2 — Binary patch of verify path
 

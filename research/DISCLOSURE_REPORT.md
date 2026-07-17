@@ -1,6 +1,6 @@
 # Security Assessment Disclosure -- OCR Studio SDK (iOS Trial 1.3.1)
 
-**Classification:** Confidential -- for Iron Software / OCR Studio Security Team only  
+**Classification:** Confidential — for Iron Software / OCR Studio Security Team only  
 **Prepared for:** Daniel Mahony, OCR Studio Security Team (`daniel.mahony@ocrstudio.ai`)  
 **Prepared by:** Adel Noaman (`expert.winxp@gmail.com`)  
 **Date:** 17 July 2026  
@@ -204,7 +204,7 @@ The signed payload is the raw 20-byte SHA-1 digest of the client-id marker. Bear
 - **P0 -- Crypto upgrade:** Migrate to RSA-2048+ with public exponent `e = 65537` (or Ed25519), use SHA-256 or SHA-512, and replace raw PKCS#1 v1.5 with standard DigestInfo PKCS#1 v1.5 or RSA-PSS (see `VENDOR_HARDENING.md` §P0).
 - **P0 -- Version the auth blob:** Ensure old trial libraries and new keys cannot be mixed, enabling clean cryptographic migration (see `VENDOR_HARDENING.md` §P0).
 
-### T4 -- Weak payload binding
+### T4 — Weak payload binding
 
 **Vector:** Signed data is effectively `SHA-1(client_id)` only.  
 **Impact:** License does not cryptographically assert config file identity, library build, platform, or expiry.  
@@ -253,7 +253,7 @@ Iron Software / OCR Studio may request a **private technical workshop** under ND
 Per authorization letter:
 
 - Findings are confidential to Iron Software / OCR Studio unless written approval is given for third-party disclosure.  
-- Validity window of assessment authorization: **13 July 2026 - 30 July 2026** (extend in writing if needed).  
+- Validity window of assessment authorization: **13 July 2026 – 30 July 2026** (extend in writing if needed).  
 - No unauthorized redistribution or commercial misuse of Iron Software IP.
 
 ---

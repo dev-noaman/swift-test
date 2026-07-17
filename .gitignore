@@ -1,0 +1,5 @@
+.playwright-cli/
+# Closed binary blobs — vendor already has these; too large for git
+OCRStudioSDKCore/lib/
+**/*.a
+**/*.xcframework/

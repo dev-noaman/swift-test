@@ -1,0 +1,847 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1215F62324BF6156003A6838 /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1215F62224BF6156003A6838 /* ImageViewCell.swift */; };
+		12556B5024C86BA900E44AE2 /* FieldNameLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12556B4F24C86BA900E44AE2 /* FieldNameLabel.swift */; };
+		1266A0C924C05BE9006898A9 /* DocumentTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1266A0C824C05BE9006898A9 /* DocumentTypeCell.swift */; };
+		12EAC5BC24780B5600E750A4 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EAC5BB24780B5500E750A4 /* TextFieldCell.swift */; };
+		12EAC5BE24785C6A00E750A4 /* DocumentTypesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EAC5BD24785C6A00E750A4 /* DocumentTypesListController.swift */; };
+		8402F3D11F7ACF4600BAE922 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D01F7ACF4600BAE922 /* AVFoundation.framework */; };
+		8402F3D31F7ACF5D00BAE922 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D21F7ACF5D00BAE922 /* CoreImage.framework */; };
+		8402F3D51F7ACF6900BAE922 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D41F7ACF6900BAE922 /* CoreFoundation.framework */; };
+		8402F3D71F7ACF8E00BAE922 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D61F7ACF8D00BAE922 /* CoreVideo.framework */; };
+		8402F3D91F7ACFAA00BAE922 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D81F7ACFAA00BAE922 /* CoreMedia.framework */; };
+		A74D02D12C465E8F00741B0A /* ocr_studio_result.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965642B3D8DAB005813D1 /* ocr_studio_result.mm */; };
+		A74D02D22C465E8F00741B0A /* OCRStudioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965732B3D90B3005813D1 /* OCRStudioSDKViewController.mm */; };
+		A74D02D32C465E8F00741B0A /* OCRStudioSDKSampleAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79965802B3D9284005813D1 /* OCRStudioSDKSampleAppDelegate.swift */; };
+		A74D02D42C465E8F00741B0A /* OCRStudioSDKInstance.mm in Sources */ = {isa = PBXBuildFile; fileRef = A799656F2B3D8FFE005813D1 /* OCRStudioSDKInstance.mm */; };
+		A74D02D52C465E8F00741B0A /* DocumentTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1266A0C824C05BE9006898A9 /* DocumentTypeCell.swift */; };
+		A74D02D62C465E8F00741B0A /* OCRStudioSDKVideoPreviewView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F12A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm */; };
+		A74D02D72C465E8F00741B0A /* ocr_studio_delegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965662B3D8DAB005813D1 /* ocr_studio_delegate.mm */; };
+		A74D02D82C465E8F00741B0A /* ocr_studio_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965672B3D8DAB005813D1 /* ocr_studio_image.mm */; };
+		A74D02D92C465E8F00741B0A /* ImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1215F62224BF6156003A6838 /* ImageViewCell.swift */; };
+		A74D02DA2C465E8F00741B0A /* OCRStudioSDKCameraFocusSquare.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F22A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm */; };
+		A74D02DB2C465E8F00741B0A /* OCRStudioSDKCaptureButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = A799657B2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm */; };
+		A74D02DC2C465E8F00741B0A /* DocumentTypesListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EAC5BD24785C6A00E750A4 /* DocumentTypesListController.swift */; };
+		A74D02DD2C465E8F00741B0A /* ocr_studio_session.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965652B3D8DAB005813D1 /* ocr_studio_session.mm */; };
+		A74D02DE2C465E8F00741B0A /* ocr_studio_instance.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965632B3D8DAB005813D1 /* ocr_studio_instance.mm */; };
+		A74D02DF2C465E8F00741B0A /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12EAC5BB24780B5500E750A4 /* TextFieldCell.swift */; };
+		A74D02E02C465E8F00741B0A /* ocr_studio_proxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965622B3D8DAB005813D1 /* ocr_studio_proxy.mm */; };
+		A74D02E12C465E8F00741B0A /* OCRStudioSDKSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A799657F2B3D9284005813D1 /* OCRStudioSDKSampleViewController.swift */; };
+		A74D02E22C465E8F00741B0A /* FieldNameLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12556B4F24C86BA900E44AE2 /* FieldNameLabel.swift */; };
+		A74D02E32C465E8F00741B0A /* OCRStudioSDKCameraManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F32A86551500F50914 /* OCRStudioSDKCameraManager.mm */; };
+		A74D02E42C465E8F00741B0A /* OCRStudioSDKQuadrangleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965762B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm */; };
+		A74D02E52C465E8F00741B0A /* OCRStudioSDKRoiView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965782B3D9257005813D1 /* OCRStudioSDKRoiView.mm */; };
+		A74D02E72C465E8F00741B0A /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D81F7ACFAA00BAE922 /* CoreMedia.framework */; };
+		A74D02E82C465E8F00741B0A /* ocrstudiosdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A79965832B3D94E4005813D1 /* ocrstudiosdk.xcframework */; };
+		A74D02E92C465E8F00741B0A /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D61F7ACF8D00BAE922 /* CoreVideo.framework */; };
+		A74D02EA2C465E8F00741B0A /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D41F7ACF6900BAE922 /* CoreFoundation.framework */; };
+		A74D02EB2C465E8F00741B0A /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D21F7ACF5D00BAE922 /* CoreImage.framework */; };
+		A74D02EC2C465E8F00741B0A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8402F3D01F7ACF4600BAE922 /* AVFoundation.framework */; };
+		A74D02ED2C465E8F00741B0A /* NFCPassportReader in Frameworks */ = {isa = PBXBuildFile; productRef = A74D02CE2C465E8F00741B0A /* NFCPassportReader */; };
+		A74D02F02C465E8F00741B0A /* config in Resources */ = {isa = PBXBuildFile; fileRef = A9B97E85298D47900039FA13 /* config */; };
+		A76534B72C2B2DC500E312B5 /* NFCPassportReader in Frameworks */ = {isa = PBXBuildFile; productRef = A76534B62C2B2DC500E312B5 /* NFCPassportReader */; };
+		A79965682B3D8DAB005813D1 /* ocr_studio_proxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965622B3D8DAB005813D1 /* ocr_studio_proxy.mm */; };
+		A79965692B3D8DAB005813D1 /* ocr_studio_instance.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965632B3D8DAB005813D1 /* ocr_studio_instance.mm */; };
+		A799656A2B3D8DAB005813D1 /* ocr_studio_result.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965642B3D8DAB005813D1 /* ocr_studio_result.mm */; };
+		A799656B2B3D8DAB005813D1 /* ocr_studio_session.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965652B3D8DAB005813D1 /* ocr_studio_session.mm */; };
+		A799656C2B3D8DAB005813D1 /* ocr_studio_delegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965662B3D8DAB005813D1 /* ocr_studio_delegate.mm */; };
+		A799656D2B3D8DAB005813D1 /* ocr_studio_image.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965672B3D8DAB005813D1 /* ocr_studio_image.mm */; };
+		A79965702B3D8FFE005813D1 /* OCRStudioSDKInstance.mm in Sources */ = {isa = PBXBuildFile; fileRef = A799656F2B3D8FFE005813D1 /* OCRStudioSDKInstance.mm */; };
+		A79965742B3D90B3005813D1 /* OCRStudioSDKViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965732B3D90B3005813D1 /* OCRStudioSDKViewController.mm */; };
+		A799657C2B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965762B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm */; };
+		A799657D2B3D9257005813D1 /* OCRStudioSDKRoiView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A79965782B3D9257005813D1 /* OCRStudioSDKRoiView.mm */; };
+		A799657E2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = A799657B2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm */; };
+		A79965812B3D9285005813D1 /* OCRStudioSDKSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A799657F2B3D9284005813D1 /* OCRStudioSDKSampleViewController.swift */; };
+		A79965822B3D9285005813D1 /* OCRStudioSDKSampleAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A79965802B3D9284005813D1 /* OCRStudioSDKSampleAppDelegate.swift */; };
+		A799658A2B4D9014005813D1 /* ocrstudiosdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A79965832B3D94E4005813D1 /* ocrstudiosdk.xcframework */; };
+		A7B39BB32D032A72006F1D99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B39BB22D032A72006F1D99 /* Assets.xcassets */; };
+		A7B39BB42D032A72006F1D99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7B39BB22D032A72006F1D99 /* Assets.xcassets */; };
+		A9B97E86298D47900039FA13 /* config in Resources */ = {isa = PBXBuildFile; fileRef = A9B97E85298D47900039FA13 /* config */; };
+		B10C18F42A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F12A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm */; };
+		B10C18F52A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F22A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm */; };
+		B10C18F62A86551500F50914 /* OCRStudioSDKCameraManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = B10C18F32A86551500F50914 /* OCRStudioSDKCameraManager.mm */; };
+		H8RD0002AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = H8RD0001AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift */; };
+		H8RD0003AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = H8RD0001AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1215F62224BF6156003A6838 /* ImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewCell.swift; sourceTree = "<group>"; };
+		12556B4F24C86BA900E44AE2 /* FieldNameLabel.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = FieldNameLabel.swift; sourceTree = "<group>"; tabWidth = 2; };
+		1266A0C824C05BE9006898A9 /* DocumentTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTypeCell.swift; sourceTree = "<group>"; };
+		12EAC5BB24780B5500E750A4 /* TextFieldCell.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; tabWidth = 2; };
+		12EAC5BD24785C6A00E750A4 /* DocumentTypesListController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentTypesListController.swift; sourceTree = "<group>"; };
+		8402F2F81F7ACC9F00BAE922 /* OCRStudioSDKSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCRStudioSDKSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8402F3D01F7ACF4600BAE922 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		8402F3D21F7ACF5D00BAE922 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		8402F3D41F7ACF6900BAE922 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		8402F3D61F7ACF8D00BAE922 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		8402F3D81F7ACFAA00BAE922 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		845FFD1A1F8504F7001CB33D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A74D02F42C465E8F00741B0A /* OCRStudioSDKSampleRFID.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCRStudioSDKSampleRFID.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A76534B42C2B1DA800E312B5 /* OCRStudioSDKSample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OCRStudioSDKSample.entitlements; sourceTree = "<group>"; };
+		A79965542B3D8DAB005813D1 /* ocr_studio_result_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_result_impl.h; sourceTree = "<group>"; };
+		A79965552B3D8DAB005813D1 /* ocr_studio_proxy_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_proxy_impl.h; sourceTree = "<group>"; };
+		A79965562B3D8DAB005813D1 /* ocr_studio_session_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_session_impl.h; sourceTree = "<group>"; };
+		A79965572B3D8DAB005813D1 /* ocr_studio_instance_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_instance_impl.h; sourceTree = "<group>"; };
+		A79965582B3D8DAB005813D1 /* ocr_studio_delegate_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_delegate_impl.h; sourceTree = "<group>"; };
+		A79965592B3D8DAB005813D1 /* ocr_studio_image_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_image_impl.h; sourceTree = "<group>"; };
+		A799655C2B3D8DAB005813D1 /* ocr_studio_delegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_delegate.h; sourceTree = "<group>"; };
+		A799655D2B3D8DAB005813D1 /* ocr_studio_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_session.h; sourceTree = "<group>"; };
+		A799655E2B3D8DAB005813D1 /* ocr_studio_image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_image.h; sourceTree = "<group>"; };
+		A799655F2B3D8DAB005813D1 /* ocr_studio_instance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_instance.h; sourceTree = "<group>"; };
+		A79965602B3D8DAB005813D1 /* ocr_studio_result.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ocr_studio_result.h; sourceTree = "<group>"; };
+		A79965622B3D8DAB005813D1 /* ocr_studio_proxy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_proxy.mm; sourceTree = "<group>"; };
+		A79965632B3D8DAB005813D1 /* ocr_studio_instance.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_instance.mm; sourceTree = "<group>"; };
+		A79965642B3D8DAB005813D1 /* ocr_studio_result.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_result.mm; sourceTree = "<group>"; };
+		A79965652B3D8DAB005813D1 /* ocr_studio_session.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_session.mm; sourceTree = "<group>"; };
+		A79965662B3D8DAB005813D1 /* ocr_studio_delegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_delegate.mm; sourceTree = "<group>"; };
+		A79965672B3D8DAB005813D1 /* ocr_studio_image.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = ocr_studio_image.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A799656E2B3D8FFE005813D1 /* OCRStudioSDKInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKInstance.h; sourceTree = "<group>"; tabWidth = 2; };
+		A799656F2B3D8FFE005813D1 /* OCRStudioSDKInstance.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKInstance.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A79965712B3D9032005813D1 /* OCRStudioSDK-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = "OCRStudioSDK-Bridging-Header.h"; sourceTree = "<group>"; tabWidth = 2; };
+		A79965722B3D90B3005813D1 /* OCRStudioSDKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKViewController.h; sourceTree = "<group>"; tabWidth = 2; };
+		A79965732B3D90B3005813D1 /* OCRStudioSDKViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKViewController.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A79965762B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKQuadrangleView.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A79965772B3D9257005813D1 /* OCRStudioSDKCaptureButton.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKCaptureButton.h; sourceTree = "<group>"; tabWidth = 2; };
+		A79965782B3D9257005813D1 /* OCRStudioSDKRoiView.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKRoiView.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A79965792B3D9257005813D1 /* OCRStudioSDKRoiView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKRoiView.h; sourceTree = "<group>"; tabWidth = 2; };
+		A799657A2B3D9257005813D1 /* OCRStudioSDKQuadrangleView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKQuadrangleView.h; sourceTree = "<group>"; tabWidth = 2; };
+		A799657B2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKCaptureButton.mm; sourceTree = "<group>"; tabWidth = 2; };
+		A799657F2B3D9284005813D1 /* OCRStudioSDKSampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = OCRStudioSDKSampleViewController.swift; sourceTree = "<group>"; tabWidth = 2; };
+		A79965802B3D9284005813D1 /* OCRStudioSDKSampleAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OCRStudioSDKSampleAppDelegate.swift; sourceTree = "<group>"; };
+		A79965832B3D94E4005813D1 /* ocrstudiosdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ocrstudiosdk.xcframework; path = ../../OCRStudioSDKCore/lib/ocrstudiosdk.xcframework; sourceTree = "<group>"; };
+		A7B39BB22D032A72006F1D99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A9B97DDD298D343D0039FA13 /* OCRStudioSDKVideoPreviewView.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKVideoPreviewView.h; sourceTree = "<group>"; tabWidth = 2; };
+		A9B97DDE298D343D0039FA13 /* OCRStudioSDKCameraManager.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKCameraManager.h; sourceTree = "<group>"; tabWidth = 2; };
+		A9B97DE2298D343D0039FA13 /* OCRStudioSDKCameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.h; path = OCRStudioSDKCameraFocusSquare.h; sourceTree = "<group>"; tabWidth = 2; };
+		A9B97E85298D47900039FA13 /* config */ = {isa = PBXFileReference; lastKnownFileType = folder; name = config; path = ../../OCRStudioSDKCore/config; sourceTree = "<group>"; };
+		B10C18F12A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKVideoPreviewView.mm; sourceTree = "<group>"; tabWidth = 2; };
+		B10C18F22A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKCameraFocusSquare.mm; sourceTree = "<group>"; tabWidth = 2; };
+		B10C18F32A86551500F50914 /* OCRStudioSDKCameraManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.cpp.objcpp; path = OCRStudioSDKCameraManager.mm; sourceTree = "<group>"; tabWidth = 2; };
+		H8RD0001AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRStudioSDKHardenedAuth.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8402F2F51F7ACC9E00BAE922 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8402F3D91F7ACFAA00BAE922 /* CoreMedia.framework in Frameworks */,
+				A799658A2B4D9014005813D1 /* ocrstudiosdk.xcframework in Frameworks */,
+				8402F3D71F7ACF8E00BAE922 /* CoreVideo.framework in Frameworks */,
+				8402F3D51F7ACF6900BAE922 /* CoreFoundation.framework in Frameworks */,
+				8402F3D31F7ACF5D00BAE922 /* CoreImage.framework in Frameworks */,
+				8402F3D11F7ACF4600BAE922 /* AVFoundation.framework in Frameworks */,
+				A76534B72C2B2DC500E312B5 /* NFCPassportReader in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A74D02E62C465E8F00741B0A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A74D02E72C465E8F00741B0A /* CoreMedia.framework in Frameworks */,
+				A74D02E82C465E8F00741B0A /* ocrstudiosdk.xcframework in Frameworks */,
+				A74D02E92C465E8F00741B0A /* CoreVideo.framework in Frameworks */,
+				A74D02EA2C465E8F00741B0A /* CoreFoundation.framework in Frameworks */,
+				A74D02EB2C465E8F00741B0A /* CoreImage.framework in Frameworks */,
+				A74D02EC2C465E8F00741B0A /* AVFoundation.framework in Frameworks */,
+				A74D02ED2C465E8F00741B0A /* NFCPassportReader in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1215F62124BF6135003A6838 /* ResultTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				12EAC5BB24780B5500E750A4 /* TextFieldCell.swift */,
+				1215F62224BF6156003A6838 /* ImageViewCell.swift */,
+				12556B4F24C86BA900E44AE2 /* FieldNameLabel.swift */,
+			);
+			path = ResultTableViewController;
+			sourceTree = "<group>";
+		};
+		1266A0C724C05BA5006898A9 /* DocumentTypesTableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				12EAC5BD24785C6A00E750A4 /* DocumentTypesListController.swift */,
+				1266A0C824C05BE9006898A9 /* DocumentTypeCell.swift */,
+			);
+			path = DocumentTypesTableViewController;
+			sourceTree = "<group>";
+		};
+		8402F2EF1F7ACC9E00BAE922 = {
+			isa = PBXGroup;
+			children = (
+				A7B39BB22D032A72006F1D99 /* Assets.xcassets */,
+				A9B97E85298D47900039FA13 /* config */,
+				A9B97DEB298D36DC0039FA13 /* wrap */,
+				A9B97DCD298D343D0039FA13 /* OCRStudioSDK */,
+				845FFD141F8504F7001CB33D /* OCRStudioSDKSample */,
+				8402F2F91F7ACC9F00BAE922 /* Products */,
+				8402F3121F7ACE1100BAE922 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		8402F2F91F7ACC9F00BAE922 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8402F2F81F7ACC9F00BAE922 /* OCRStudioSDKSample.app */,
+				A74D02F42C465E8F00741B0A /* OCRStudioSDKSampleRFID.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8402F3121F7ACE1100BAE922 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A79965832B3D94E4005813D1 /* ocrstudiosdk.xcframework */,
+				8402F3D81F7ACFAA00BAE922 /* CoreMedia.framework */,
+				8402F3D61F7ACF8D00BAE922 /* CoreVideo.framework */,
+				8402F3D41F7ACF6900BAE922 /* CoreFoundation.framework */,
+				8402F3D21F7ACF5D00BAE922 /* CoreImage.framework */,
+				8402F3D01F7ACF4600BAE922 /* AVFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		845FFD141F8504F7001CB33D /* OCRStudioSDKSample */ = {
+			isa = PBXGroup;
+			children = (
+				A76534B42C2B1DA800E312B5 /* OCRStudioSDKSample.entitlements */,
+				A79965802B3D9284005813D1 /* OCRStudioSDKSampleAppDelegate.swift */,
+				A799657F2B3D9284005813D1 /* OCRStudioSDKSampleViewController.swift */,
+				1266A0C724C05BA5006898A9 /* DocumentTypesTableViewController */,
+				1215F62124BF6135003A6838 /* ResultTableViewController */,
+				845FFD1A1F8504F7001CB33D /* Info.plist */,
+			);
+			path = OCRStudioSDKSample;
+			sourceTree = "<group>";
+		};
+		A79965512B3D8DAB005813D1 /* objcocrstudiosdk */ = {
+			isa = PBXGroup;
+			children = (
+				A79965522B3D8DAB005813D1 /* include_impl */,
+				A799655A2B3D8DAB005813D1 /* include */,
+				A79965612B3D8DAB005813D1 /* src */,
+			);
+			path = objcocrstudiosdk;
+			sourceTree = "<group>";
+		};
+		A79965522B3D8DAB005813D1 /* include_impl */ = {
+			isa = PBXGroup;
+			children = (
+				A79965532B3D8DAB005813D1 /* objcocrstudiosdk_impl */,
+			);
+			path = include_impl;
+			sourceTree = "<group>";
+		};
+		A79965532B3D8DAB005813D1 /* objcocrstudiosdk_impl */ = {
+			isa = PBXGroup;
+			children = (
+				A79965542B3D8DAB005813D1 /* ocr_studio_result_impl.h */,
+				A79965552B3D8DAB005813D1 /* ocr_studio_proxy_impl.h */,
+				A79965562B3D8DAB005813D1 /* ocr_studio_session_impl.h */,
+				A79965572B3D8DAB005813D1 /* ocr_studio_instance_impl.h */,
+				A79965582B3D8DAB005813D1 /* ocr_studio_delegate_impl.h */,
+				A79965592B3D8DAB005813D1 /* ocr_studio_image_impl.h */,
+			);
+			path = objcocrstudiosdk_impl;
+			sourceTree = "<group>";
+		};
+		A799655A2B3D8DAB005813D1 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				A799655B2B3D8DAB005813D1 /* objcocrstudiosdk */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		A799655B2B3D8DAB005813D1 /* objcocrstudiosdk */ = {
+			isa = PBXGroup;
+			children = (
+				A799655C2B3D8DAB005813D1 /* ocr_studio_delegate.h */,
+				A799655D2B3D8DAB005813D1 /* ocr_studio_session.h */,
+				A799655E2B3D8DAB005813D1 /* ocr_studio_image.h */,
+				A799655F2B3D8DAB005813D1 /* ocr_studio_instance.h */,
+				A79965602B3D8DAB005813D1 /* ocr_studio_result.h */,
+			);
+			path = objcocrstudiosdk;
+			sourceTree = "<group>";
+		};
+		A79965612B3D8DAB005813D1 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A79965622B3D8DAB005813D1 /* ocr_studio_proxy.mm */,
+				A79965632B3D8DAB005813D1 /* ocr_studio_instance.mm */,
+				A79965642B3D8DAB005813D1 /* ocr_studio_result.mm */,
+				A79965652B3D8DAB005813D1 /* ocr_studio_session.mm */,
+				A79965662B3D8DAB005813D1 /* ocr_studio_delegate.mm */,
+				A79965672B3D8DAB005813D1 /* ocr_studio_image.mm */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		A79965752B3D9257005813D1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A79965762B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm */,
+				A79965772B3D9257005813D1 /* OCRStudioSDKCaptureButton.h */,
+				A79965782B3D9257005813D1 /* OCRStudioSDKRoiView.mm */,
+				A79965792B3D9257005813D1 /* OCRStudioSDKRoiView.h */,
+				A799657A2B3D9257005813D1 /* OCRStudioSDKQuadrangleView.h */,
+				A799657B2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		A9B97DCD298D343D0039FA13 /* OCRStudioSDK */ = {
+			isa = PBXGroup;
+			children = (
+				A79965712B3D9032005813D1 /* OCRStudioSDK-Bridging-Header.h */,
+				A9B97DCE298D343D0039FA13 /* Core */,
+				H8RD0004AAAA000000000001 /* Hardened */,
+				A9B97DD1298D343D0039FA13 /* Controller */,
+				A9B97DDC298D343D0039FA13 /* Media */,
+			);
+			name = OCRStudioSDK;
+			path = ../../OCRStudioSDK;
+			sourceTree = "<group>";
+		};
+		H8RD0004AAAA000000000001 /* Hardened */ = {
+			isa = PBXGroup;
+			children = (
+				H8RD0001AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift */,
+			);
+			path = Hardened;
+			sourceTree = "<group>";
+		};
+		A9B97DCE298D343D0039FA13 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A799656E2B3D8FFE005813D1 /* OCRStudioSDKInstance.h */,
+				A799656F2B3D8FFE005813D1 /* OCRStudioSDKInstance.mm */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		A9B97DD1298D343D0039FA13 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				A79965752B3D9257005813D1 /* View */,
+				A79965722B3D90B3005813D1 /* OCRStudioSDKViewController.h */,
+				A79965732B3D90B3005813D1 /* OCRStudioSDKViewController.mm */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		A9B97DDC298D343D0039FA13 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				B10C18F22A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm */,
+				B10C18F32A86551500F50914 /* OCRStudioSDKCameraManager.mm */,
+				B10C18F12A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm */,
+				A9B97DDD298D343D0039FA13 /* OCRStudioSDKVideoPreviewView.h */,
+				A9B97DDE298D343D0039FA13 /* OCRStudioSDKCameraManager.h */,
+				A9B97DE2298D343D0039FA13 /* OCRStudioSDKCameraFocusSquare.h */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
+		A9B97DEB298D36DC0039FA13 /* wrap */ = {
+			isa = PBXGroup;
+			children = (
+				A79965512B3D8DAB005813D1 /* objcocrstudiosdk */,
+			);
+			name = wrap;
+			path = ../../OCRStudioSDKCore/wrap;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8402F2F71F7ACC9E00BAE922 /* OCRStudioSDKSample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8402F30A1F7ACC9F00BAE922 /* Build configuration list for PBXNativeTarget "OCRStudioSDKSample" */;
+			buildPhases = (
+				8402F2F41F7ACC9E00BAE922 /* Sources */,
+				8402F2F51F7ACC9E00BAE922 /* Frameworks */,
+				8402F2F61F7ACC9E00BAE922 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OCRStudioSDKSample;
+			packageProductDependencies = (
+				A76534B62C2B2DC500E312B5 /* NFCPassportReader */,
+			);
+			productName = "ocr-swift";
+			productReference = 8402F2F81F7ACC9F00BAE922 /* OCRStudioSDKSample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A74D02CD2C465E8F00741B0A /* OCRStudioSDKSampleRFID */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A74D02F12C465E8F00741B0A /* Build configuration list for PBXNativeTarget "OCRStudioSDKSampleRFID" */;
+			buildPhases = (
+				A74D02D02C465E8F00741B0A /* Sources */,
+				A74D02E62C465E8F00741B0A /* Frameworks */,
+				A74D02EE2C465E8F00741B0A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OCRStudioSDKSampleRFID;
+			packageProductDependencies = (
+				A74D02CE2C465E8F00741B0A /* NFCPassportReader */,
+			);
+			productName = "ocr-swift";
+			productReference = A74D02F42C465E8F00741B0A /* OCRStudioSDKSampleRFID.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8402F2F01F7ACC9E00BAE922 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0900;
+				LastUpgradeCheck = 1250;
+				ORGANIZATIONNAME = ai.ocrstudio;
+				TargetAttributes = {
+					8402F2F71F7ACC9E00BAE922 = {
+						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1100;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 8402F2F31F7ACC9E00BAE922 /* Build configuration list for PBXProject "OCRStudioSDKSample" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8402F2EF1F7ACC9E00BAE922;
+			packageReferences = (
+				A76534B52C2B2DC500E312B5 /* XCRemoteSwiftPackageReference "NFCPassportReader" */,
+			);
+			productRefGroup = 8402F2F91F7ACC9F00BAE922 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8402F2F71F7ACC9E00BAE922 /* OCRStudioSDKSample */,
+				A74D02CD2C465E8F00741B0A /* OCRStudioSDKSampleRFID */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8402F2F61F7ACC9E00BAE922 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7B39BB42D032A72006F1D99 /* Assets.xcassets in Resources */,
+				A9B97E86298D47900039FA13 /* config in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A74D02EE2C465E8F00741B0A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7B39BB32D032A72006F1D99 /* Assets.xcassets in Resources */,
+				A74D02F02C465E8F00741B0A /* config in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8402F2F41F7ACC9E00BAE922 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A799656A2B3D8DAB005813D1 /* ocr_studio_result.mm in Sources */,
+				A79965742B3D90B3005813D1 /* OCRStudioSDKViewController.mm in Sources */,
+				A79965822B3D9285005813D1 /* OCRStudioSDKSampleAppDelegate.swift in Sources */,
+				A79965702B3D8FFE005813D1 /* OCRStudioSDKInstance.mm in Sources */,
+				H8RD0002AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift in Sources */,
+				1266A0C924C05BE9006898A9 /* DocumentTypeCell.swift in Sources */,
+				B10C18F42A86551500F50914 /* OCRStudioSDKVideoPreviewView.mm in Sources */,
+				A799656C2B3D8DAB005813D1 /* ocr_studio_delegate.mm in Sources */,
+				A799656D2B3D8DAB005813D1 /* ocr_studio_image.mm in Sources */,
+				1215F62324BF6156003A6838 /* ImageViewCell.swift in Sources */,
+				B10C18F52A86551500F50914 /* OCRStudioSDKCameraFocusSquare.mm in Sources */,
+				A799657E2B3D9257005813D1 /* OCRStudioSDKCaptureButton.mm in Sources */,
+				12EAC5BE24785C6A00E750A4 /* DocumentTypesListController.swift in Sources */,
+				A799656B2B3D8DAB005813D1 /* ocr_studio_session.mm in Sources */,
+				A79965692B3D8DAB005813D1 /* ocr_studio_instance.mm in Sources */,
+				12EAC5BC24780B5600E750A4 /* TextFieldCell.swift in Sources */,
+				A79965682B3D8DAB005813D1 /* ocr_studio_proxy.mm in Sources */,
+				A79965812B3D9285005813D1 /* OCRStudioSDKSampleViewController.swift in Sources */,
+				12556B5024C86BA900E44AE2 /* FieldNameLabel.swift in Sources */,
+				B10C18F62A86551500F50914 /* OCRStudioSDKCameraManager.mm in Sources */,
+				A799657C2B3D9257005813D1 /* OCRStudioSDKQuadrangleView.mm in Sources */,
+				A799657D2B3D9257005813D1 /* OCRStudioSDKRoiView.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A74D02D02C465E8F00741B0A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A74D02D12C465E8F00741B0A /* ocr_studio_result.mm in Sources */,
+				A74D02D22C465E8F00741B0A /* OCRStudioSDKViewController.mm in Sources */,
+				A74D02D32C465E8F00741B0A /* OCRStudioSDKSampleAppDelegate.swift in Sources */,
+				A74D02D42C465E8F00741B0A /* OCRStudioSDKInstance.mm in Sources */,
+				H8RD0003AAAA000000000001 /* OCRStudioSDKHardenedAuth.swift in Sources */,
+				A74D02D52C465E8F00741B0A /* DocumentTypeCell.swift in Sources */,
+				A74D02D62C465E8F00741B0A /* OCRStudioSDKVideoPreviewView.mm in Sources */,
+				A74D02D72C465E8F00741B0A /* ocr_studio_delegate.mm in Sources */,
+				A74D02D82C465E8F00741B0A /* ocr_studio_image.mm in Sources */,
+				A74D02D92C465E8F00741B0A /* ImageViewCell.swift in Sources */,
+				A74D02DA2C465E8F00741B0A /* OCRStudioSDKCameraFocusSquare.mm in Sources */,
+				A74D02DB2C465E8F00741B0A /* OCRStudioSDKCaptureButton.mm in Sources */,
+				A74D02DC2C465E8F00741B0A /* DocumentTypesListController.swift in Sources */,
+				A74D02DD2C465E8F00741B0A /* ocr_studio_session.mm in Sources */,
+				A74D02DE2C465E8F00741B0A /* ocr_studio_instance.mm in Sources */,
+				A74D02DF2C465E8F00741B0A /* TextFieldCell.swift in Sources */,
+				A74D02E02C465E8F00741B0A /* ocr_studio_proxy.mm in Sources */,
+				A74D02E12C465E8F00741B0A /* OCRStudioSDKSampleViewController.swift in Sources */,
+				A74D02E22C465E8F00741B0A /* FieldNameLabel.swift in Sources */,
+				A74D02E32C465E8F00741B0A /* OCRStudioSDKCameraManager.mm in Sources */,
+				A74D02E42C465E8F00741B0A /* OCRStudioSDKQuadrangleView.mm in Sources */,
+				A74D02E52C465E8F00741B0A /* OCRStudioSDKRoiView.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8402F3081F7ACC9F00BAE922 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8402F3091F7ACC9F00BAE922 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8402F30B1F7ACC9F00BAE922 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCRStudioSDKSample/OCRStudioSDKSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 6Y3283FU97;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				HEADER_SEARCH_PATHS = (
+					$SRCROOT/../../OCRStudioSDKCore/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include_impl,
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/OCRStudioSDKSample/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.ocrstudio.swiftocrsample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "../../OCRStudioSDK/OCRStudioSDK-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8402F30C1F7ACC9F00BAE922 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCRStudioSDKSample/OCRStudioSDKSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 6Y3283FU97;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				HEADER_SEARCH_PATHS = (
+					$SRCROOT/../../OCRStudioSDKCore/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include_impl,
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/OCRStudioSDKSample/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_SWIFT_FLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.ocrstudio.swiftocrsample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "../../OCRStudioSDK/OCRStudioSDK-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A74D02F22C465E8F00741B0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCRStudioSDKSample/OCRStudioSDKSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 6Y3283FU97;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				HEADER_SEARCH_PATHS = (
+					$SRCROOT/../../OCRStudioSDKCore/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include_impl,
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/OCRStudioSDKSample/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_SWIFT_FLAGS = "-D __RFID__";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.ocrstudio.swiftocrsamplerfid;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "../../OCRStudioSDK/OCRStudioSDK-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A74D02F32C465E8F00741B0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = OCRStudioSDKSample/OCRStudioSDKSample.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = NO;
+				DEVELOPMENT_TEAM = 6Y3283FU97;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				HEADER_SEARCH_PATHS = (
+					$SRCROOT/../../OCRStudioSDKCore/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include,
+					$SRCROOT/../../OCRStudioSDKCore/wrap/objcocrstudiosdk/include_impl,
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/OCRStudioSDKSample/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = $SRCROOT/../../OCRStudioSDKCore/lib;
+				MARKETING_VERSION = 1.0.0;
+				OTHER_SWIFT_FLAGS = "-D __RFID__";
+				PRODUCT_BUNDLE_IDENTIFIER = ai.ocrstudio.swiftocrsamplerfid;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "../../OCRStudioSDK/OCRStudioSDK-Bridging-Header.h";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8402F2F31F7ACC9E00BAE922 /* Build configuration list for PBXProject "OCRStudioSDKSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8402F3081F7ACC9F00BAE922 /* Debug */,
+				8402F3091F7ACC9F00BAE922 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8402F30A1F7ACC9F00BAE922 /* Build configuration list for PBXNativeTarget "OCRStudioSDKSample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8402F30B1F7ACC9F00BAE922 /* Debug */,
+				8402F30C1F7ACC9F00BAE922 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A74D02F12C465E8F00741B0A /* Build configuration list for PBXNativeTarget "OCRStudioSDKSampleRFID" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A74D02F22C465E8F00741B0A /* Debug */,
+				A74D02F32C465E8F00741B0A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A74D02CF2C465E8F00741B0A /* XCRemoteSwiftPackageReference "NFCPassportReader" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AndyQ/NFCPassportReader";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+		A76534B52C2B2DC500E312B5 /* XCRemoteSwiftPackageReference "NFCPassportReader" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AndyQ/NFCPassportReader";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A74D02CE2C465E8F00741B0A /* NFCPassportReader */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A74D02CF2C465E8F00741B0A /* XCRemoteSwiftPackageReference "NFCPassportReader" */;
+			productName = NFCPassportReader;
+		};
+		A76534B62C2B2DC500E312B5 /* NFCPassportReader */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A76534B52C2B2DC500E312B5 /* XCRemoteSwiftPackageReference "NFCPassportReader" */;
+			productName = NFCPassportReader;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 8402F2F01F7ACC9E00BAE922 /* Project object */;
+}

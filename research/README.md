@@ -4,7 +4,8 @@ Authorized research only (`Official Authorization for Security Research_ocrstudi
 
 | File | Purpose |
 |------|---------|
-| `DISCLOSURE_REPORT.md` | **Send this to OCR Studio** — formal confidential disclosure |
+| `../CLAUDE.md` (§ Security Assessment Disclosure) | **Canonical disclosure (source of truth)** — send/export from there |
+| `DISCLOSURE_REPORT.md` | Stub only — redirects to `CLAUDE.md` |
 | `VERIFY_PATH_MAP.md` | Symbol/offset/reloc map of `VSA` → `pkcs1_verify` / `__const` (no patch tooling) |
 | `verify_path_map.json` | Machine-readable dump from `map_verify_path.py` |
 | `map_verify_path.py` | Regenerates the verify-path map from carved arm64 `.o` slices |

@@ -178,7 +178,7 @@ Stable references for linked binaries: **use mangled symbol names**, not object-
 | `research/verify_static_auth_poc.py` | Offline verify-only PoC (PASS/FAIL) |
 | `research/ocrstudio_pubkey_*.pem` | Recovered RSA-1024 public key |
 | `research/VENDOR_HARDENING.md` | Mitigation backlog |
-| `research/DISCLOSURE_REPORT.md` | Formal disclosure (§4 / §6 T2) |
+| `CLAUDE.md` (§ Security Assessment Disclosure) | Formal disclosure SoT (§4 / §6 T2); `research/DISCLOSURE_REPORT.md` is a stub |
 
 ---
 

@@ -101,7 +101,7 @@ Only the holder of the private activation material can mint new valid signatures
 
 ---
 
-## 5. Evidence -- verification PoC (reproducible)
+## 5. Evidence — verification PoC (reproducible)
 
 **Artifact:** `research/verify_static_auth_poc.py`  
 **Nature:** Independent reimplementation of the **verify** path only (public operation). No private key, no forge, no binary patch.

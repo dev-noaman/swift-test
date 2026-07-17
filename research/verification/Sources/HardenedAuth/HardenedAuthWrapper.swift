@@ -331,16 +331,19 @@ public final class HardenedAuthWrapper {
             throw SessionAuthorizationError(.legacyFail, "legacy signature empty or malformed")
         }
 
+        let configHash = ConfigDigest.sha256Hex(of: configData)
+
         if config.offlineSKU {
-            // §6.2.3 / §8.2: offline SKUs fall back to the legacy path with telemetry.
+            // §6.2.3: offline SKUs only — empty JWT is allowed by CreateSessionHardened
+            // when offlineSKU is set; production online SKUs never take this branch.
             return try factory.createSessionHardened(signature: legacySignature,
                                                      attestationJWT: "",
                                                      paramsJSON: paramsJSON)
         }
 
-        let configHash = ConfigDigest.sha256Hex(of: configData)
         let jwt = try obtainToken(appId: appId, configHash: configHash, now: now)
-
+        // Factory is expected to be PatchedSessionFactory / CreateSessionHardened
+        // (Phase 3): JWT gates run again inside the native-side stand-in.
         let status = verifier.verify(jwt: jwt, configSHA256: configHash, now: now)
         guard status == .ok else {
             throw SessionAuthorizationError(status, "hardened gate failed: \(status)")

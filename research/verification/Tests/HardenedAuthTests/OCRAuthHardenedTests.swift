@@ -309,4 +309,75 @@ final class OCRAuthHardenedTests: XCTestCase {
         XCTAssertEqual(factory.lastSignature, Fixtures.trialSig)
         XCTAssertFalse(factory.lastJWT?.isEmpty ?? true, "hardened path must pass a real JWT")
     }
+
+    // MARK: - Fully patched (Phase 3) — CreateSessionHardened is mandatory
+
+    private func patchedGate(offline: Bool = false) -> CreateSessionHardened {
+        let (cfg, _) = makeConfig(offline: offline)
+        return CreateSessionHardened(config: cfg, phase: .phase3Patched)
+    }
+
+    /// Fully patched: stolen trial signature alone cannot open a session.
+    func testFullyPatched_trialSignatureAloneRejected() {
+        let gate = patchedGate()
+        XCTAssertThrowsError(try gate.create(signature: Fixtures.trialSig,
+                                             attestationJWT: "",
+                                             paramsJSON: "{}",
+                                             configSHA256: hash(Fixtures.dayA),
+                                             now: Fixtures.now)) {
+            XCTAssertEqual(($0 as? SessionAuthorizationError)?.status, .jwtSignatureBad)
+        }
+    }
+
+    /// Fully patched: legacy CreateSession entry is retired.
+    func testFullyPatched_legacyCreateSessionRetired() {
+        let gate = patchedGate()
+        XCTAssertThrowsError(try gate.createSessionLegacy(signature: Fixtures.trialSig)) {
+            XCTAssertEqual(($0 as? SessionAuthorizationError)?.status, .legacyFail)
+        }
+    }
+
+    /// Fully patched: valid JWT + trial sig creates an attestation-bound session.
+    func testFullyPatched_happyPath() throws {
+        let gate = patchedGate()
+        let jwt = validToken()
+        let session = try gate.create(signature: Fixtures.trialSig,
+                                      attestationJWT: jwt,
+                                      paramsJSON: "{}",
+                                      configSHA256: hash(Fixtures.dayA),
+                                      now: Fixtures.now)
+        XCTAssertTrue(session.attestationBound)
+    }
+
+    /// Fully patched: stolen token for another build cannot open a session.
+    func testFullyPatched_stolenTokenWrongBuildRejected() {
+        let gate = patchedGate() // baked build A
+        let jwtForB = validToken(build: Fixtures.buildB)
+        XCTAssertThrowsError(try gate.create(signature: Fixtures.trialSig,
+                                             attestationJWT: jwtForB,
+                                             paramsJSON: "{}",
+                                             configSHA256: hash(Fixtures.dayA),
+                                             now: Fixtures.now)) {
+            XCTAssertEqual(($0 as? SessionAuthorizationError)?.status, .buildMismatch)
+        }
+    }
+
+    /// End-to-end: wrapper + PatchedSessionFactory (what Codemagic proves).
+    func testFullyPatched_wrapperUsesNativeGate() throws {
+        let (cfg, _) = makeConfig()
+        let gate = CreateSessionHardened(config: cfg, phase: .phase3Patched)
+        let factory = PatchedSessionFactory(gate: gate,
+                                            configSHA256: hash(Fixtures.dayA),
+                                            now: Fixtures.now)
+        let wrapper = HardenedAuthWrapper(config: cfg,
+                                          provider: MintingProvider(minter: minter, now: Fixtures.now),
+                                          factory: factory,
+                                          cache: InMemoryCache())
+        let session = try wrapper.createSession(legacySignature: Fixtures.trialSig,
+                                                appId: "app.A",
+                                                configData: Fixtures.dayA,
+                                                paramsJSON: "{}",
+                                                now: Fixtures.now)
+        XCTAssertTrue((session as? HardenedSession)?.attestationBound ?? false)
+    }
 }

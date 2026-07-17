@@ -56,6 +56,77 @@ Concrete object-file anchors for the current trial build (descriptive map only):
 
 **Details:** § Patch resistance (testing guide) — testing-engineer surface map, TR-01…TR-11 matrix (including binary-patch intents), design patterns, and acceptance checklist.
 
+## Patch resistance (testing guide)
+
+### Audience & purpose
+
+This chapter is for OEM security/product engineering **and** a testing engineer validating hardening of the offline static-auth path. It turns the descriptive map in `research/VERIFY_PATH_MAP.md` into test intents and acceptance criteria.
+
+`research/verify_static_auth_poc.py` proves the **verify** model (public operation) only. It is **not** a binary-patch harness and must not be extended into one in this repository.
+
+### Current patch surface (descriptive)
+
+Conceptual targets on trial iOS xcframework 1.3.1 (no edit recipes):
+
+- `se::security::internal::VSA` / `VEA` — thin wrappers that load the `__const` auth blob and **tail-branch** into `pkcs1_verify`.
+- `se::security::pkcs1_verify` — hex-decode signature, BearSSL PKCS#1 verify with raw SHA-1 (`hash_oid=NULL`), compare recovered digest to embedded expected hash.
+- `__const` auth blob — 132-byte public key material + `EXPECTED_HASH` (20 bytes) at `__const+0xAF`.
+- `se::security::internal::VCIH` — re-hashes the client-id string and compares to the **same** digest constant used by verify.
+
+Full symbol / reloc detail: `research/VERIFY_PATH_MAP.md`.
+
+### Anchor → mitigation map
+
+| Anchor (symbol / blob) | Weakness | Hardening action | Priority |
+|------------------------|----------|------------------|----------|
+| `VSA` / `VEA` wrappers | Single entry can be skipped or forced | Diversify gates; do not rely on one wrapper | P3 |
+| `pkcs1_verify` compare | One success/fail branch | Multiple independent checks; fail closed | P3 |
+| `EXPECTED_HASH` in `__const` | Fixed 20-byte constant beside pubkey | Stop using digest-only integrity; version blob | P0, P3 |
+| `VCIH` | Same digest as verify; not code-bound | Bind to verify-path code-region hash | P3 |
+| Stolen 256-hex signature | Offline reuse on same library build | Structured claims + tokens | P1, P2 |
+| Patched / substituted library | Offline SKU may run indefinitely | Online attest + build-id binding | P1, P2 |
+
+### Test matrix (pre-/post-hardening intents)
+
+Intent-level only. TR-08…TR-11 describe **what** to validate after a binary is altered; they do **not** provide patch bytes. Byte-level exercises stay under NDA / private workshop (see disclosure report §8).
+
+| ID | Test intent | Pre-hardening expectation (trial 1.3.1) | Post-hardening expectation | Evidence / how to observe |
+|----|-------------|----------------------------------------|----------------------------|---------------------------|
+| TR-01 | Valid trial signature + unmodified lib | `CreateSession` / verify PoC **PASS** | Still **PASS** on legitimate builds | `python research/verify_static_auth_poc.py`; sample app session |
+| TR-02 | Empty / null signature | May skip or fail (`CBZ` on null) | Must **FAIL** closed (no session) | Session error / PoC FAIL |
+| TR-03 | Malformed / wrong-length hex | Fail verify | Must **FAIL** | PoC / session |
+| TR-04 | Well-formed wrong signature (1-nibble flip) | **FAIL** | Must remain **FAIL** | PoC with flipped nibble |
+| TR-05 | Stolen valid signature on *same* library build | **PASS** (T1) | **FAIL** or scoped reject when P1/P2 land | Bundle/build/config mismatch; token policy |
+| TR-06 | Integrity vs verify share one digest constant | Both weak / coupled | Integrity must fail if verify-path code changes; digest-only check insufficient | Design review + hash of verify objects |
+| TR-07 | Modified library build claiming old license | May still pass if only client_id signed | Must **FAIL** when build-id / auth-blob version / code-region hash enforced | Build-id + versioned blob checks |
+| TR-08 | Binary patch — verify gate (conceptual: neutralize `VSA`/`VEA`/`pkcs1_verify` success path) | Session may succeed with invalid signature if gate neutralized | Must **FAIL** via remaining diversified or remote checks | Session denied; verify-path object hashes |
+| TR-09 | Binary patch — expected digest blob (conceptual: alter `__const` `EXPECTED_HASH`) | Local verify can track attacker-chosen digest if blob + compare co-controlled | Must **FAIL** if code-region integrity or versioned blob disagrees | Integrity + blob version mismatch |
+| TR-10 | Binary patch — `VCIH` only / decouple checks | Shared digest ⇒ weak coupling | Defeating integrity must not auto-defeat verify (and vice versa) | Independent failure modes in test plan |
+| TR-11 | Redistributed patched library | Offline SKU may run indefinitely if patch succeeds | Production: token renew / online attest fails (P2); build-id mismatch (P1) | Token renew failures; build inventory |
+
+### Design patterns (VCIH successor & diversified checks)
+
+1. Bind integrity to a **code-region hash** of the verify path (or equivalent), not only `SHA-1(client_id)`.
+2. Diversify checks so a single fixed 20-byte compare is not the sole gate.
+3. Ensure verify-gate failure and integrity failure are **independent** kill-switches.
+4. Version the auth blob / keys so patched old trial libs cannot mix with new production keys (P0).
+
+### Acceptance criteria checklist
+
+- [ ] Invalid / empty / malformed signatures never open a session (TR-02…TR-04)
+- [ ] Integrity binds verify-path code (or equivalent), not only client-id string hash (TR-06, TR-10)
+- [ ] No single fixed 20-byte compare is the sole gate (TR-08, TR-09)
+- [ ] Auth blob / keys are versioned (TR-07, P0)
+- [ ] Stolen signature cannot authorize a different product/build (P1) or requires short-lived server token where the SKU demands it (P2) (TR-05, TR-11)
+- [ ] TR-01 still passes on legitimate builds
+- [ ] TR-08…TR-11 documented with pass/fail observables (not exploit steps)
+- [ ] No single binary edit to one of {wrapper, compare, `__const` digest, `VCIH`} keeps a production session alive when P0–P3 are claimed done
+- [ ] Byte-level patch exercises, if any, stay under NDA / private workshop
+
+### Relationship to P0–P2
+
+Crypto upgrade (P0), structured binding (P1), and operational tokens (P2) are **complementary** to local integrity (P3). They change what a testing engineer can still break offline after a conceptual binary patch (see contribution notes under each priority). Completing P0–P2 without TR-08…TR-11 validation is not sufficient to claim patch resistance.
+
 ## What this research does *not* claim
 
 - Private key recovery from the public modulus.  

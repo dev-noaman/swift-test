@@ -129,7 +129,7 @@ Only the holder of the private activation material can mint new valid signatures
 
 Described without exploit code. Severity assumes a motivated integrator or attacker with the trial/production xcframework.
 
-### T1 -- Signature theft / clone
+### T1 — Signature theft / clone
 
 **Vector:** Extract the 256-hex personalized signature from an app binary or source tree and reuse it with the same library build.
 
@@ -152,16 +152,16 @@ An integrator or attacker who has access to a shipped IPA or source repository c
 - Absence of any server-side license telemetry or revocation capability.
 
 **Mapped mitigations:**
-- **P2 -- Operational controls:** Prefer server-delivered short-lived tokens over shipping the signature in the binary (see `VENDOR_HARDENING.md` §P2).
-- **P1 -- Stronger license binding:** Sign a structured payload that includes `library_build_id`, platform, and validity window so a stolen signature cannot be replayed onto a different product or build (see §7 and `VENDOR_HARDENING.md` §P1).
-- **P2 -- Key separation:** Use separate trial and production keypairs, and rotate trial keys per customer build (see `VENDOR_HARDENING.md` §P2).
+- **P2 — Operational controls:** Prefer server-delivered short-lived tokens over shipping the signature in the binary (see `VENDOR_HARDENING.md` §P2).
+- **P1 — Stronger license binding:** Sign a structured payload that includes `library_build_id`, platform, and validity window so a stolen signature cannot be replayed onto a different product or build (see §7 and `VENDOR_HARDENING.md` §P1).
+- **P2 — Key separation:** Use separate trial and production keypairs, and rotate trial keys per customer build (see `VENDOR_HARDENING.md` §P2).
 
-### T2 -- Binary patch of verify path
+### T2 — Binary patch of verify path
 
 **Vector:** Modify the static library or linked binary so that the offline authentication check always succeeds, regardless of the supplied signature.
 
 **Scenario:**
-An attacker with the xcframework binary identifies the static-auth entry points in `static_auth.cpp.o` -- `se::security::internal::VSA` and `se::security::internal::VEA`. Both are thin wrappers that load the embedded public-key / expected-digest blob from `__const` and tail-branch into `se::security::pkcs1_verify`. The attacker could patch any of three conceptual locations: the entry wrappers to skip verification, the compare logic inside `pkcs1_verify`, or the 20-byte expected digest in the `__const` blob. Because the companion integrity check `VCIH()` recomputes `SHA-1(client_id)` and compares it to the same embedded digest, an attacker who controls both the verify gate and the integrity constant can defeat both checks simultaneously.
+An attacker with the xcframework binary identifies the static-auth entry points in `static_auth.cpp.o` — `se::security::internal::VSA` and `se::security::internal::VEA`. Both are thin wrappers that load the embedded public-key / expected-digest blob from `__const` and tail-branch into `se::security::pkcs1_verify`. The attacker could patch any of three conceptual locations: the entry wrappers to skip verification, the compare logic inside `pkcs1_verify`, or the 20-byte expected digest in the `__const` blob. Because the companion integrity check `VCIH()` recomputes `SHA-1(client_id)` and compares it to the same embedded digest, an attacker who controls both the verify gate and the integrity constant can defeat both checks simultaneously.
 
 **Prerequisites:**
 - Write access to the shipped static library or the linked app binary.
@@ -178,11 +178,11 @@ An attacker with the xcframework binary identifies the static-auth entry points 
 - Unexpected changes to the `__const` auth blob near the expected digest offset.
 
 **Mapped mitigations:**
-- **P0 -- Crypto upgrade:** A modern signature scheme raises the cost of any patch-based downgrade, but patching must still be assumed possible (see `VENDOR_HARDENING.md` §P0).
-- **P3 -- Anti-patch / integrity:** Bind `VCIH` (or its successor) to a code-region hash of the verify path, not only to the client-id string; diversify checks across multiple locations; avoid a single 20-byte constant compare at a fixed offset (see `VENDOR_HARDENING.md` §P3).
-- **P2 -- Online attestation:** For high-value SKUs, supplement offline auth with short-lived server-issued tokens so a patched binary cannot operate indefinitely offline (see `VENDOR_HARDENING.md` §P2).
+- **P0 — Crypto upgrade:** A modern signature scheme raises the cost of any patch-based downgrade, but patching must still be assumed possible (see `VENDOR_HARDENING.md` §P0).
+- **P3 — Anti-patch / integrity:** Bind `VCIH` (or its successor) to a code-region hash of the verify path, not only to the client-id string; diversify checks across multiple locations; avoid a single 20-byte constant compare at a fixed offset (see `VENDOR_HARDENING.md` §P3).
+- **P2 — Online attestation:** For high-value SKUs, supplement offline auth with short-lived server-issued tokens so a patched binary cannot operate indefinitely offline (see `VENDOR_HARDENING.md` §P2).
 
-### T3 -- Cryptographic weakness of the scheme
+### T3 — Cryptographic weakness of the scheme
 
 **Vector:** The static-auth scheme relies on cryptographic primitives that are below current industry standards: RSA-1024, public exponent `e = 3`, SHA-1, and raw PKCS#1 v1.5 padding without an ASN.1 DigestInfo OID.
 
@@ -201,8 +201,8 @@ The signed payload is the raw 20-byte SHA-1 digest of the client-id marker. Bear
 - N/A for a pure cryptographic break; detection requires key rotation and monitoring for signatures that do not match issued license records.
 
 **Mapped mitigations:**
-- **P0 -- Crypto upgrade:** Migrate to RSA-2048+ with public exponent `e = 65537` (or Ed25519), use SHA-256 or SHA-512, and replace raw PKCS#1 v1.5 with standard DigestInfo PKCS#1 v1.5 or RSA-PSS (see `VENDOR_HARDENING.md` §P0).
-- **P0 -- Version the auth blob:** Ensure old trial libraries and new keys cannot be mixed, enabling clean cryptographic migration (see `VENDOR_HARDENING.md` §P0).
+- **P0 — Crypto upgrade:** Migrate to RSA-2048+ with public exponent `e = 65537` (or Ed25519), use SHA-256 or SHA-512, and replace raw PKCS#1 v1.5 with standard DigestInfo PKCS#1 v1.5 or RSA-PSS (see `VENDOR_HARDENING.md` §P0).
+- **P0 — Version the auth blob:** Ensure old trial libraries and new keys cannot be mixed, enabling clean cryptographic migration (see `VENDOR_HARDENING.md` §P0).
 
 ### T4 — Weak payload binding
 

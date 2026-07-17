@@ -169,16 +169,54 @@ Tooling notes for continuing binary analysis of this SDK — these cost real tim
 
 ## Hardened-Auth Reference Package (source of truth)
 
-> Reference remediation artifacts implementing the P0–P3 hardening design. The narrative package `research/VALIDATION_PACKAGE.md` defers to **this section** as source of truth. Artifacts live in `research/verification/`. **These are reference/spec code, NOT shipped SDK code** — `CreateSessionHardened` does not exist in the trial xcframework; the wrapper is written against protocols so the vendor can drop in the real ObjC++ entry.
+> Remediation artifacts implementing the P0–P3 hardening design. The narrative package `research/VALIDATION_PACKAGE.md` defers to **this section** as source of truth. Ship notes for the vendor: `SHIP_TO_VENDOR.md`.
 
-### Artifacts (`research/verification/`)
+### Status — done vs pending (18 July 2026)
 
-| File | Role |
+#### Done (assessor / this repo)
+
+| Item | Evidence |
+|------|----------|
+| SwiftPM hardened package (`HardenedAuth` + Phase-3 `CreateSessionHardened`) | `research/verification/` — `swift test` |
+| Codemagic CI (auto on push to `master`) | Repo `dev-noaman/swift-test`, workflow **Hardened auth XCTest** (`codemagic.yaml`) |
+| Green CI — Swift XCTest | Commit `6794805`, build `6a5a9ffbb20639fbd1f646eb` |
+| Green CI — Swift + native C++ selftest | Commit `8c8a14f`, build `6a5aa19d315dfd6e6d042593` |
+| Native drop-in kit (C API + ObjC++ category + Makefile selftest) | `research/native_hardened/` (+ copies under `OCRStudioSDKCore/`) |
+| High-level SDK gate: JWT before `createSession` | `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift`; `OCRStudioSDKInstance.initVideoSession` (`hardenedAuthEnabled=YES` by default) |
+| Sample project wires hardened Swift source | `Samples/Swift/OCRStudioSDKSample.xcodeproj` |
+| Vendor ship doc | `SHIP_TO_VENDOR.md` |
+| Public GitHub delivery branch | `https://github.com/dev-noaman/swift-test` @ `28dd328` (full SDK sources; `.a` / xcframework gitignored as too large) |
+
+#### Pending (vendor / Iron Software — not done in this trial tree)
+
+| Item | Why it is still open |
+|------|----------------------|
+| Merge gates into closed `libocrstudiosdk` / new xcframework | No OEM engine sources here; trial `.a` still uses RSA-1024 `VSA` only |
+| Bake production Ed25519 **server public key**; remove trial auto-mint seed | `OCRStudioSDKHardenedAuth.swift` still has demo seed `001122…ccddeeff` for offline Codemagic/sample |
+| Production Auth Server (HSM/KMS, nonce TTL store, caller auth) | Only `reference_server_mint.py` exists |
+| Phase-3 retire legacy `CreateSession` **inside** the native binary | High-level SDK can refuse; anyone calling ObjC `createSession:` on the engine directly still hits old `VSA` until OEM rebuilds |
+| P3 integrity: real code-region hash + hardened `VCIH` wired | Hooks are stubs / injectable in reference |
+| Separate trial vs production keypairs; per-customer trial rotation | Operational (VENDOR_HARDENING §P2) |
+| Re-run Appendix A steps 9–10 against **shipped** hardened library | Requires vendor binary drop |
+| Optional: Git LFS / omit large `.ocr` from public repo | `config_anypsp_anyid.ocr` ~64 MB warned by GitHub on push |
+
+**Honest summary:** The **patched SDK surface and CI proofs are complete** for vendor handoff. The **closed engine binary is not rewritten** — that is OEM work after they merge `research/native_hardened` + `SHIP_TO_VENDOR.md`.
+
+### Artifacts
+
+| Path | Role |
 |------|------|
-| `reference_server_mint.py` | Vendor-side Ed25519 attestation-JWT mint (`--gen-key` / `--mint` / `--serve`). PyNaCl, manual JWT. |
-| `Sources/HardenedAuth/HardenedAuthWrapper.swift` | Client wrapper + four-gate `HardenedAuthVerifier` (CryptoKit `Curve25519.Signing`), `NonceLRU`, Keychain token cache. |
-| `Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | XCTest suite for the §8 coverage matrix; mints tokens in-process with a pinned CryptoKit key. |
-| `Package.swift` | SwiftPM package — `cd research/verification && swift test` (Codemagic workflow `hardened-auth-tests`). |
+| `research/verification/Package.swift` | SwiftPM — `cd research/verification && swift test` |
+| `research/verification/Sources/HardenedAuth/HardenedAuthWrapper.swift` | Client wrapper + four-gate verifier, Keychain cache |
+| `research/verification/Sources/HardenedAuth/CreateSessionHardened.swift` | Phase-3 gate (legacy `CreateSession` retired) |
+| `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | §8 matrix + fully-patched tests |
+| `research/verification/reference_server_mint.py` | Ed25519 JWT mint (`--gen-key` / `--mint` / `--serve`) |
+| `research/native_hardened/` | C++ `hardened_auth` + ObjC++ category + `make selftest` (libsodium) |
+| `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift` | **Shipped high-level gate** used by `OCRStudioSDKInstance` |
+| `OCRStudioSDKCore/include/ocrstudiosdk/hardened_auth.h` | Native C API (vendor merge) |
+| `OCRStudioSDKCore/wrap/.../OCRStudioSDKInstance+Hardened.*` | ObjC++ `createSessionHardened…` (vendor merge) |
+| `codemagic.yaml` | CI: Swift tests + native selftest |
+| `SHIP_TO_VENDOR.md` | Handoff checklist for OCR Studio |
 
 ### Attestation JWT wire contract (MUST match across Python mint ↔ Swift verify)
 
@@ -221,8 +259,10 @@ Result maps to `OCRAuthGateStatus { ok=0, legacyFail, jwtSignatureBad, jwtExpire
   "$PY" research/verification/reference_server_mint.py --gen-key --seed <64-hex>
   "$PY" research/verification/reference_server_mint.py --mint --priv <64-hex> --config-sha256 <64-hex> --now <epoch>
   ```
-- **Swift will not compile on this Windows host.** Run XCTest on Codemagic (`codemagic.yaml` → workflow `hardened-auth-tests`) or any Mac: `cd research/verification && swift test`. The Python↔Swift contract was also proven by reimplementing the verifier's steps in Python (PyNaCl) against a minted token. A green run against a *shipped* hardened library (`VALIDATION_PACKAGE.md` Appendix A steps 9–10) still requires the vendor binary — do not claim that passed here.
+- **Swift will not compile on this Windows host.** Use Codemagic (`codemagic.yaml` → **Hardened auth XCTest**) or any Mac: `cd research/verification && swift test` and `cd research/native_hardened && make selftest` (needs `brew install libsodium`).
+- Proven green on Codemagic (see Done table above). A green run against a *vendor-shipped* hardened `.a` (`VALIDATION_PACKAGE.md` Appendix A steps 9–10) is still **pending**.
 - `reference_server_mint.py` depends on **Flask + PyNaCl** (not PyJWT, despite Appendix A step 2 listing it). Deterministic keygen/mint via `--seed` / `--now` for reproducible tests.
+- GitHub delivery repo for CI/vendor handoff: `dev-noaman/swift-test` (do not commit `OCRStudioSDKCore/lib/*.a` — gitignored).
 
 ## Building & Running
 
@@ -560,10 +600,11 @@ Per authorization letter:
 | `research/verify_static_auth_poc.py` | Verification-only PoC |
 | `research/check_binary_poc.py` | Binary ↔ PoC constants cross-check (parses `libocrstudiosdk-ios.a` arm64 slice) |
 | `research/VALIDATION_PACKAGE.md` | Validation + remediation narrative (defers to CLAUDE.md § Hardened-Auth Reference Package) |
-| `research/verification/reference_server_mint.py` | Reference Ed25519 attestation-JWT mint |
-| `research/verification/Sources/HardenedAuth/HardenedAuthWrapper.swift` | Reference client wrapper + four-gate verifier |
-| `research/verification/Tests/HardenedAuthTests/OCRAuthHardenedTests.swift` | Reference XCTest suite (§8 matrix) |
-| `research/verification/Package.swift` | SwiftPM entry for `swift test` / Codemagic |
+| `research/verification/` | SwiftPM HardenedAuth + XCTest (§8 / Phase 3) |
+| `research/native_hardened/` | Native C++/ObjC++ CreateSessionHardened kit + selftest |
+| `OCRStudioSDK/Hardened/OCRStudioSDKHardenedAuth.swift` | High-level JWT gate (wired into `initVideoSession`) |
+| `SHIP_TO_VENDOR.md` | Vendor handoff — done vs pending, merge steps |
+| `codemagic.yaml` | Codemagic: Swift + native hardened tests |
 | `research/DISCLOSURE_REPORT.md` | Stub → points to this file's disclosure section |
 
 ## Common Tasks
